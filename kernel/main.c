@@ -1,11 +1,8 @@
 #include "print.h"
-
-int main(void)
-{
-
-    // put_char('h');
-    put_str("hello world\n");
-    put_str("heheheh\n");
-    put_int(128);
-    while(1);
+#include "init.h"
+void main(void) {
+   put_str("I am kernel\n");
+   init_all();
+   asm volatile("sti");	     // 为演示中断处理,在此临时开中断
+   while(1);
 }
