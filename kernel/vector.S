@@ -21,7 +21,7 @@ intr%1entry:       ;每个中断都要压入中断向量号自己知道自己的
     ;如果是从从片上进入的中断，除了往从片上发EOI,还要往主片上发送EOI
     mov al,0x20
     out 0xa0,al
-    out 00x20,al
+    out 0x20,al
 
     add esp,4
     iret

@@ -3,9 +3,10 @@
 //
 
 #include "interrupt.h"
+#include "print.h"
 #include "stdint.h"
 #include "global.h"
-#include "../lib/kernel/io.h"
+#include "io.h"
 
 #define IDT_DESC_CNT 0X21
 
@@ -68,7 +69,7 @@ static void pic_init()
     outb(PIC_S_DATA,0x01);    //ICW4 8086模式，正常EOI
 
     /*打开主片上的IR0,也就是目前只接受时种产生的中断*/
-    outb(PIC_M_DATA,0xfe);    //主片屏蔽IR1-7
+    outb(PIC_M_DATA,0xfe);    //主片屏蔽IR1-7 只开放了时钟中断
     outb(PIC_S_DATA,0xff);    //从片屏蔽所有中断
 
     put_str("pic_init done!\n");
@@ -81,8 +82,8 @@ void idt_init()
     put_str("idt_init start\n");
     idt_desc_init();   //初始化中断描述表
     pic_init(); //初始化8259A
-    //加载idt
-    uint64_t idt_operand=((sizeof(idt)-1)|((uint64_t)(uint32_t)idt<<16));
+    //加载idt idt的个数
+    uint64_t idt_operand=((sizeof(idt)-1)|((uint64_t)((uint32_t)idt)<<16));
     asm volatile("lidt %0"::"m" (idt_operand));
     put_str("idt_init done");
 }

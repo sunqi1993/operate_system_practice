@@ -36,5 +36,6 @@ add_executable(mbr mbr.S)
 
 set_target_properties(mbr loader
         PROPERTIES
+
         SUFFIX .bin
         )
