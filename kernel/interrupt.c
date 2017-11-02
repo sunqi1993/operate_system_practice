@@ -5,9 +5,14 @@
 #include "interrupt.h"
 #include "stdint.h"
 #include "global.h"
+#include "../lib/kernel/io.h"
 
 #define IDT_DESC_CNT 0X21
 
+#define  PIC_M_CTRL 0X20
+#define  PIC_M_DATA 0X21
+#define  PIC_S_CTRL 0XA0
+#define  PIC_S_DATA 0XA1
 
 //中断门描述符结构体
 struct gate_desc{
@@ -44,6 +49,30 @@ static void idt_desc_init()
         make_idt_desc(&idt[i],IDT_DESC_ATTR_DPL0,intr_entry_table[i]);
     }
     put_str("idt_desc_init done\n");
+}
+
+/*8259中断芯片主片从片初始化的设置*/
+
+static void pic_init()
+{
+    /*初始化主片*/
+    outb(PIC_M_CTRL,0x11);    //ICW1 :边沿触发 需要ICW4
+    outb(PIC_M_DATA,0x20);    //ICW2 :设置中断向量号起始数值32
+    outb(PIC_M_DATA,0X04);    //icw3 :设置主片【主片IR2接从片
+    outb(PIC_M_DATA,0x01);    //ICW4 :设置x86模式，正常结束EOI 手动
+
+    /*初始化从片*/
+    outb(PIC_S_CTRL,0x11);    //边沿触发，级联8259 需要ICW4
+    outb(PIC_S_DATA,0x28);    //ICW2:设置从片的中断向量起始数值0x28=0x20+7+1
+    outb(PIC_S_DATA,0x02);    //从片连接主片的IR2
+    outb(PIC_S_DATA,0x01);    //ICW4 8086模式，正常EOI
+
+    /*打开主片上的IR0,也就是目前只接受时种产生的中断*/
+    outb(PIC_M_DATA,0xfe);    //主片屏蔽IR1-7
+    outb(PIC_S_DATA,0xff);    //从片屏蔽所有中断
+
+    put_str("pic_init done!\n");
+
 }
 
 //完成有关中断的所有初始化工作
