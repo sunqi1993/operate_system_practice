@@ -2,8 +2,9 @@
 
 
 disk=/home/sunqi/Desktop/study/operator_system/practice/bochs_sunqi/hd60M.img
+
+cd `dirname $0`
 echo 当前文件位置 $(pwd)
-cd $(pwd)
 
 dd if=bin/mbr.bin of=${disk} count=1 bs=512  conv=notrunc
 #将loader写入第二分区 count×bs >实际的输入大小的时候会按照实际的大小写入
@@ -17,6 +18,5 @@ then
 else
     echo "${disk}.lock 不存在"
 fi
-
 
 bochs -f ./bochsrc.txt

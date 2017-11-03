@@ -190,7 +190,7 @@ enter_kernel:
    call kernel_init
    mov esp, 0xc009f000
    jmp KERNEL_ENTRY_POINT                 ; 用地址0x1500访问测试，结果ok
-
+    ;jmp 0x1500;
 
 ;-----------------   将kernel.bin中的segment拷贝到编译的地址   -----------
 kernel_init:

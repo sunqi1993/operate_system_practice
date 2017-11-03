@@ -6,7 +6,17 @@
 #define SYSTEM_INTERRUPT_H
 
 #include "stdint.h"
+
+
+#define IDT_DESC_CNT 0X21
+
+#define  PIC_M_CTRL 0X20
+#define  PIC_M_DATA 0X21
+#define  PIC_S_CTRL 0XA0
+#define  PIC_S_DATA 0XA1
+
 typedef void* intr_handler;
+intr_handler interruptFunction_table[IDT_DESC_CNT];
 void idt_init();
 //static void pic_init();
 //static void idt_desc_init();

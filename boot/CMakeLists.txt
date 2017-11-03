@@ -9,16 +9,16 @@ set(CMAKE_ASM_NASM_FLAGS "-e")
 #set(CMAKE_ASM_NASM_LINK_EXECUTABLE "ld <FLAGS> <CMAKE_ASM_NASM_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>")
 #这个地方不需要连接的过程 原本的程序是调用了两次nasm 会报错
 #set(CMAKE_ASM_NASM_LINK_EXECUTABLE "cp <OBJECTS>  <TARGET>")
-set(CMAKE_ASM_NASM_LINK_EXECUTABLE "nasm <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
+set(CMAKE_ASM_NASM_LINK_EXECUTABLE "yasm <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 ENABLE_LANGUAGE(ASM_NASM)
 
 
-#头文件包含的目录 使用nasm的时候 由于目录不以 dir/ 结束所以无效
+#头文件包含的目录 使用nasm的时候 由于目录不以 dir/ 结束所以无效 yasm是nasm的兼容版 没有这个bug
 include_directories(
         include
 )
-#修改方式
-add_compile_options(-I ${CMAKE_CURRENT_SOURCE_DIR}/include/ )
+#nasm修改方式
+#add_compile_options(-I ${CMAKE_CURRENT_SOURCE_DIR}/include/ )
 
 
 #修改输出的路径
