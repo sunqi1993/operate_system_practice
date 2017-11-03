@@ -5,11 +5,12 @@ set(CMAKE_ASM_NASM_OBJECT_FORMAT bin)
 
 #set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -f bin -l ~/<OBJECT>.txt")
 #只是生成汇编的预处理文件
-set(CMAKE_ASM_NASM_FLAGS "-e")
+set(CMAKE_ASM_NASM_FLAGS "")
 #set(CMAKE_ASM_NASM_LINK_EXECUTABLE "ld <FLAGS> <CMAKE_ASM_NASM_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>")
 #这个地方不需要连接的过程 原本的程序是调用了两次nasm 会报错
 #set(CMAKE_ASM_NASM_LINK_EXECUTABLE "cp <OBJECTS>  <TARGET>")
-set(CMAKE_ASM_NASM_LINK_EXECUTABLE "yasm <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
+#set(CMAKE_ASM_NASM_LINK_EXECUTABLE "yasm <FLAGS> -o <TARGET> <OBJECTS> ")
+set(CMAKE_ASM_NASM_LINK_EXECUTABLE "cp <OBJECTS>  <TARGET> ")
 ENABLE_LANGUAGE(ASM_NASM)
 
 
@@ -32,7 +33,6 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 add_executable(loader loader.S)
 add_executable(mbr mbr.S)
 #add_library(1  STATIC loader.S)
-
 
 set_target_properties(mbr loader
         PROPERTIES

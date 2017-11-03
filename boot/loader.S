@@ -189,8 +189,11 @@ enter_kernel:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
    call kernel_init
    mov esp, 0xc009f000
-   jmp KERNEL_ENTRY_POINT                 ; 用地址0x1500访问测试，结果ok
-    ;jmp 0x1500;
+   ;jmp KERNEL_ENTRY_POINT                 ; 用地址0x1500访问测试，结果ok
+   push ax
+   mov ax,[KERNEL_BIN_BASE_ADDR + 24]   ;  elf程序的虚拟入口地址 e_entry
+   jmp ax
+   pop ax
 
 ;-----------------   将kernel.bin中的segment拷贝到编译的地址   -----------
 kernel_init:
