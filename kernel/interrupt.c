@@ -6,20 +6,9 @@
 #include "print.h"
 #include "stdint.h"
 #include "global.h"
-#include "io.h"
+#include "io.c"
 
 
-//中断门描述符结构体
-struct gate_desc{
-    uint16_t func_offset_low_word;
-    uint16_t selector;
-    uint8_t dcount;     //此项为双字计数字段，是门描述符中的第四个字节
-                        //此项为固定值，不用考虑
-    uint8_t attribute;
-    uint16_t func_offset_high_word;
-};
-
-char * intr_name[IDT_DESC_CNT]; //用于保存异常的名字
 
 //static intr_handler interruptFunction_table[IDT_DESC_CNT];  //定义中断处理程序数组
 
@@ -67,6 +56,7 @@ static void exception_init()
     intr_name[17]="#AC Alignment Check Exception";
     intr_name[18]="#MC Machine Check Exception";
     intr_name[19]="#XF SMID Floating-Point Exception";
+
 }
 
 //将函数和相关参数转化为一个IDT表结构
@@ -123,7 +113,53 @@ void  idt_init()
     //加载idt idt的个数
     uint64_t idt_operand=((sizeof(idt)-1)|((uint64_t)((uint32_t)idt)<<16));
     asm volatile("lidt %0"::"m" (idt_operand));
-    put_str("idt_init done");
+    put_str("idt_init done\n");
+}
+
+/*获取当前的中断状态*/
+enum intr_status intr_get_status()
+{
+    uint32_t  eflags=0;
+    GET_EFLAGS(eflags);
+    return (EFLAGS_IF & eflags)? INTR_ON:INTR_OFF;
 }
 
 
+/*开中断 并且返回中断前的状态*/
+enum intr_status intr_enale()
+{
+    enum intr_status old_status;
+    if(INTR_ON==intr_get_status())
+    {
+        old_status=INTR_ON;
+        return  old_status;
+    } else{
+        old_status=INTR_OFF;
+        asm volatile("sti");
+        return old_status;
+    }
+}
+
+
+/*关中断 并且返回关中断前的状态*/
+enum intr_status intr_disable()
+{
+    enum intr_status old_status;
+    if(INTR_ON==intr_get_status())
+    {
+        old_status=INTR_ON;
+        asm volatile("cli":::"memory");
+        return  old_status;
+    } else{
+        old_status=INTR_OFF;
+        return old_status;
+    }
+
+}
+
+
+/*设置状态为status*/
+enum intr_status intr_set_status(enum intr_status status)
+{
+    return status & INTR_ON ? intr_enale():intr_disable();
+}

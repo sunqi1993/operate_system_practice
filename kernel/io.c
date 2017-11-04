@@ -5,7 +5,7 @@
 #ifndef SYSTEM_IO_H
 #define SYSTEM_IO_H
 
-#include "../stdint.h"
+#include "stdint.h"
 /**************************************
  * 机器模式
  * b  --输出蕲春器QImodd名称，即寄存器中的低8位[a-d]l
