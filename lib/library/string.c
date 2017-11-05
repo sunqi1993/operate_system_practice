@@ -2,7 +2,7 @@
 // Created by sunqi on 17-11-4.
 //
 
-#include <assert.h>
+#include "debug.h"
 #include "string.h"
 
 #include "global.h"
@@ -12,5 +12,5 @@
 
 void memset(void* dst_,uint8_t value,uint8_t size)
 {
-    //    assert(dst_!=);
+//        ASSERT(dst_!= NULL);
 }

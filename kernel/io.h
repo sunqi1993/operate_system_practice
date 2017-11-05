@@ -5,6 +5,7 @@
 #ifndef SYSTEM_IO_H
 #define SYSTEM_IO_H
 
+#include "stdint.h"
 static  inline  void outb(uint16_t port,uint8_t data);
 static inline void outsw(uint16_t port, const void* addr,uint32_t word_cnt);
 static  inline uint8_t intb(uint16_t port);

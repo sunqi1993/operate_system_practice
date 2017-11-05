@@ -3,7 +3,7 @@
 //
 
 #include "timer.h"
-#include "print.h"
+#include "../../kernel/print.h"
 #include "../../kernel/io.c"
 #define IRQ0_FRQ 20
 #define INPUT_FRQ 1193180
