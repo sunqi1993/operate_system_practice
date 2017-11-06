@@ -2,6 +2,9 @@
 set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS nasm asm S)
 set(CMAKE_ASM_NASM_OBJECT_FORMAT bin)
 #set(CMAKE_NASM_LINK_EXECUTABLE nasm)
+if (WIN32)
+    set(CMAKE_ASM_NASM_COMPILER "D:/MySoftWare/chocolatey_package/bin/")
+endif ()
 
 #set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -f bin -l ~/<OBJECT>.txt")
 #只是生成汇编的预处理文件
