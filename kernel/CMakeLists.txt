@@ -19,9 +19,7 @@ set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS nasm asm S)
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf)
 set(CMAKE_ASM_NASM_FLAGS "-f elf")
 
-if (WIN32)
-    set(CMAKE_ASM_NASM_COMPILER "D:/MySoftWare/chocolatey_package/bin/")
-endif ()
+
 
 enable_language(ASM_NASM)
 
