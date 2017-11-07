@@ -35,6 +35,6 @@ keyboard:keymap=$BXSHARE/keymaps/x11-pc-us.map
 
 # 硬盘设置 
 ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
-ata0-master: type=disk, path="/home/sunqi/Desktop/study/operator_system/practice/bochs_sunqi/hd60M.img", mode=flat,translation=auto
+ata0-master: type=disk, path="/home/sunqi/Desktop/operate_system_practice/hd60M.img", mode=flat,translation=auto
 
 #gdbstub: enabled=1, port=1234, text_base=0, data_base=0, bss_base=0
