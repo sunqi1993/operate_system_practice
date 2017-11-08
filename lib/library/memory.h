@@ -8,6 +8,17 @@
 #include "stdint.h"
 #include "bitmap.h"
 
+#define	 PG_P_1	  1	// 页表项或页目录项存在属性位
+#define	 PG_P_0	  0	// 页表项或页目录项存在属性位
+#define PG_RW_R	 0
+#define PG_RW_W	 2
+#define PG_US_S	 0
+#define PG_US_U	 4
+
+enum pool_flags{
+    PF_KERNEL=1,
+    PF_USER=2
+};
 
 
 extern struct pool kernel_pool,user_pool;

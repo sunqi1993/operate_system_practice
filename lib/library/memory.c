@@ -2,11 +2,19 @@
 // Created by sunqi on 17-11-6.
 //
 
+#include <stddef.h>
+#include <debug.h>
 #include "memory.h"
 #include "stdint.h"
 #include "print.h"
+#include "string.h"
 
 #define PG_SIZE 4096
+//地址线的最高10位表示页目录表
+#define PDE_IDX(addr)  ((addr&0xffc00000)>>22)
+//地址线的12-23位表示 页的序列偏移地址
+#define PTE_IDX(addr)  ((addr&0x3ff000)>>12)
+
 
 /*位图地址：
  * 因为0xc009f000是内核主线程栈顶，0xc009e000是内核主线程的pcb
@@ -131,3 +139,141 @@ void mem_init()
     put_str("mem_init done!\n");
 }
 
+/*
+ * pf表示在虚拟内存池中申请pg_cnt个虚拟页
+ * 成功则返回虚拟页的起始地址，失败则返回NULL
+ */
+static void* vaddr_get(enum pool_flags pf,uint32_t pg_cnt)
+{
+    int vaddr_start=0,bit_idx_start=-1;
+    uint32_t  cnt=0;
+    if (pf==PF_KERNEL)
+    {
+        bit_idx_start=bitmap_check_bit_idx(&kernel_vaddr.vaddr_bitmap,pg_cnt);
+        if(bit_idx_start==-1)
+            return NULL;
+
+        while (cnt<pg_cnt)
+        {
+            bitmap_set(&kernel_vaddr.vaddr_bitmap,bit_idx_start+cnt++,1);
+        }
+        //计算出申请的空间的地址
+        vaddr_start=kernel_vaddr.vaddr_start+bit_idx_start*PG_SIZE;
+    } else{
+        //用户内存池 将来实现用户进程再补充
+
+    }
+    return (void*)vaddr_start;
+}
+
+/*得到虚拟地址vaddr对应的pte指针*/
+uint32_t* pte_ptr(uint32_t vaddr)
+{
+    /*
+     * 先把页目录当成也页表访问 找出原地址对应的页表地址
+     * */
+    uint32_t* pte=(uint32_t*)(0xffc00000+\
+                            ((vaddr&0xffc00000)>>12)+\
+                             PTE_IDX(vaddr)*4
+                            );
+    return pte;
+}
+
+/*得到vaddr所对应的PDE指针*/
+uint32_t* pde_ptr(uint32_t  vaddr)
+{
+    uint32_t* pde=(uint32_t*)(0xfffff000+ PTE_IDX(vaddr)*4);
+    return  pde;
+}
+
+/*在m_pool指向的污泥内存池中分配一个物理内存页
+ * 成功页返回页框的污泥地址 失败则返回NULL
+ * */
+
+static void* palloc(struct pool* m_pool)
+{
+    /*扫描或者设置位图要保证原子操作*/
+    int bit_idx=bitmap_scan(&m_pool->pool_bitmap,1);
+    if(bit_idx==-1)
+    {
+        return NULL;
+    }
+    bitmap_set(&m_pool->pool_bitmap,bit_idx,1);    //将此处bit_idx设置为占用
+    uint32_t page_phyaddr=(bit_idx*PG_SIZE)+m_pool->phy_addr_start;
+    return (void*)page_phyaddr;
+}
+
+/*
+ * 在页表中添加虚拟地址_vaddr与物理地址_page_phyaddr的映射
+ * */
+
+static void page_table_map(void* _vaddr,void* _page_phyaddr)
+{
+    uint32_t vaddr=_vaddr;
+    uint32_t page_phyaddr=_page_phyaddr;
+    uint32_t *pte=pte_ptr(vaddr);
+    uint32_t *pde=pde_ptr(vaddr);
+
+    /*
+     * 注意执行 *pte会访问pde表 所以请确保要pde创建完成以后才能执行 *pte操作
+     * 否者会引发page_fault错误 因此在 *pde为0的时候 *pte只能出现在它的else语句中
+     */
+    /*所在目录 判断目录项的p位是否是1，若为1表示该表已经存在*/
+    if(*pde&0x00000001)
+    {
+        ASSERT(!(*pte&0x00000001));
+        //页目录项和页表项的P位为1 此处判断页目录项是否存在
+        if(!(*pte&0x00000001))
+        {
+            //页表不存在的话就需要创建页表
+            // US=1 RW=1 P=1
+            *pte=(page_phyaddr|PG_US_S|PG_RW_W|PG_P_1);
+
+        } else{
+            //目前不会执行到这里 因为前面有个断言函数 判断是否会被占用
+            PANIC("PTE retreat");
+            *pte=(page_phyaddr|PG_US_S|PG_RW_W|PG_P_1);
+        }
+
+    } else{
+        //页目录项不存在所以先创建页目录项 在创建页表项
+        uint32_t pde_phyaddr=(uint32_t)palloc(&kernel_pool);
+        *pde=(page_phyaddr|PG_US_S|PG_RW_W|PG_P_1);
+        //将页表对应的地址的整个4K数据都清除为0
+        memset((void*)((int)pte & 0xfffff000),0,PG_SIZE);
+        ASSERT(!(*pte&0x00000001));
+        //既然页目录不存在 就往页表上随意写地址了
+        *pte=(page_phyaddr|PG_US_U,PG_RW_W|PG_P_1);
+    }
+}
+
+/*分配pg_cnt个页空间 成功则返回起始虚拟地址 失败则返回NULL*/
+
+void* malloc_page(enum pool_flags pf,uint32_t pg_cnt)
+{
+    ASSERT(pg_cnt>0&&pg_cnt<3840);
+    /**************malloc_page的原理是三个动作的合成*******************
+     *1.通过vaddr_get在虚拟内存池中生气虚拟地址
+     *2.palloc在物理内存池中申请物理页
+     *3.通过map映射虚拟地址和物理地址之间的联系
+     */
+    void* vaddr_start=vaddr_get(pf,pg_cnt);
+    if(vaddr_start==NULL)
+    {
+        return NULL;
+    }
+    uint32_t vaddr=(uint32_t)vaddr_start,cnt=pg_cnt;
+    struct pool* mem_pool=pf&PF_KERNEL?&kernel_pool:&user_pool;
+    while (cnt-->0)
+    {
+        void* page_phyaddr=palloc(mem_pool);
+        if(page_phyaddr==NULL)
+        {
+            //失败的时候要将已经申请的虚拟地址和物理页全部回滚，在将来完成内存回收的时候再进行补充
+            return NULL;
+        }
+        page_table_map((void*)vaddr,page_phyaddr);
+        vaddr+=PG_SIZE;     //下一个虚拟页
+    }
+    return vaddr_start;
+}
