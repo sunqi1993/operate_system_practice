@@ -277,3 +277,15 @@ void* malloc_page(enum pool_flags pf,uint32_t pg_cnt)
     }
     return vaddr_start;
 }
+
+/*从内核的物理内存池中申请内存，成功则返回其虚拟地址 失败则返回NULL*/
+
+void* get_kernel_pages(uint32_t pg_cnt)
+{
+    void* vaddr=malloc_page(PF_KERNEL,pg_cnt);
+    if(vaddr!=NULL)
+    {
+        memset(vaddr,0,pg_cnt*PG_SIZE);
+    }
+    return vaddr;
+}

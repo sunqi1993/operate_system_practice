@@ -30,7 +30,7 @@ int bitmap_scan(struct bitmap* btmp,uint32_t cnt)
 {
     uint32_t idx_byte=0;
     /*bit为1表示占满*/
-    while ((0xff&btmp->bits[idx_byte])&&idx_byte<btmp->bitmap_bytes_len)
+    while ((0xff==btmp->bits[idx_byte])&&idx_byte<btmp->bitmap_bytes_len)
     {
         idx_byte++;
     }

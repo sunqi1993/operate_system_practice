@@ -27,4 +27,6 @@ extern struct virtual_addr kernel_vaddr;
 
 void mem_init();
 
+void* get_kernel_pages(uint32_t pg_cnt);
+
 #endif //SYSTEM_MEMORY_H
