@@ -3,9 +3,10 @@
 #include "interrupt.h"
 #include "memory.h"
 int main(void) {
+
    put_str("I am kernel\n");
    init_all();
-
+   intr_disable();
    void* addr=get_kernel_pages(3);
    put_str("\n get_kernel_page start vaddr is ");
    put_int((uint32_t)addr);

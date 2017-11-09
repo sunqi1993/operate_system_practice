@@ -159,6 +159,14 @@ static void* vaddr_get(enum pool_flags pf,uint32_t pg_cnt)
         }
         //计算出申请的空间的地址
         vaddr_start=kernel_vaddr.vaddr_start+bit_idx_start*PG_SIZE;
+        #ifdef DEBUG
+        put_str("vaddr_get info: bit_idx vaddr");
+        put_int(bit_idx_start);
+        put_str("  ");
+        put_int(vaddr_start);
+        put_str("\n");
+        #endif
+
     } else{
         //用户内存池 将来实现用户进程再补充
 
@@ -173,7 +181,7 @@ uint32_t* pte_ptr(uint32_t vaddr)
      * 先把页目录当成也页表访问 找出原地址对应的页表地址
      * */
     uint32_t* pte=(uint32_t*)(0xffc00000+\
-                            ((vaddr&0xffc00000)>>12)+\
+                            ((vaddr&0xffc00000)>>10)+\
                              PTE_IDX(vaddr)*4
                             );
     return pte;
@@ -182,7 +190,7 @@ uint32_t* pte_ptr(uint32_t vaddr)
 /*得到vaddr所对应的PDE指针*/
 uint32_t* pde_ptr(uint32_t  vaddr)
 {
-    uint32_t* pde=(uint32_t*)(0xfffff000+ PTE_IDX(vaddr)*4);
+    uint32_t* pde=(uint32_t*)(0xfffff000+ PDE_IDX(vaddr)*4);
     return  pde;
 }
 
@@ -214,15 +222,30 @@ static void page_table_map(void* _vaddr,void* _page_phyaddr)
     uint32_t *pte=pte_ptr(vaddr);
     uint32_t *pde=pde_ptr(vaddr);
 
+
+#ifdef DEBUG
+put_str("\npage_table_map params:vaddr page_phyaddr *pde *pte \n");
+put_int((int)vaddr);
+    put_str(" ");
+    put_int((uint32_t)page_phyaddr);
+    put_str(" ");
+    put_int((uint32_t)pde);
+    put_str(" ");
+    put_int((uint32_t)pte);
+    put_str("\n");
+    #endif
+
     /*
      * 注意执行 *pte会访问pde表 所以请确保要pde创建完成以后才能执行 *pte操作
      * 否者会引发page_fault错误 因此在 *pde为0的时候 *pte只能出现在它的else语句中
      */
     /*所在目录 判断目录项的p位是否是1，若为1表示该表已经存在*/
-    if(*pde&0x00000001)
+    if(*pde & 0x00000001)
     {
         ASSERT(!(*pte&0x00000001));
         //页目录项和页表项的P位为1 此处判断页目录项是否存在
+
+
         if(!(*pte&0x00000001))
         {
             //页表不存在的话就需要创建页表
@@ -263,7 +286,7 @@ void* malloc_page(enum pool_flags pf,uint32_t pg_cnt)
         return NULL;
     }
     uint32_t vaddr=(uint32_t)vaddr_start,cnt=pg_cnt;
-    struct pool* mem_pool=pf&PF_KERNEL?&kernel_pool:&user_pool;
+    struct pool* mem_pool=pf&PF_KERNEL? &kernel_pool: &user_pool;
     while (cnt-->0)
     {
         void* page_phyaddr=palloc(mem_pool);
@@ -272,6 +295,14 @@ void* malloc_page(enum pool_flags pf,uint32_t pg_cnt)
             //失败的时候要将已经申请的虚拟地址和物理页全部回滚，在将来完成内存回收的时候再进行补充
             return NULL;
         }
+        #ifdef DEBUG
+        put_str("malloc_page params:");
+        put_int(vaddr);
+        put_str(" ");
+        put_int((int32_t)page_phyaddr);
+        put_str(" \n");
+        #endif
+
         page_table_map((void*)vaddr,page_phyaddr);
         vaddr+=PG_SIZE;     //下一个虚拟页
     }
@@ -282,7 +313,11 @@ void* malloc_page(enum pool_flags pf,uint32_t pg_cnt)
 
 void* get_kernel_pages(uint32_t pg_cnt)
 {
+    put_str("get_kernel_pages start\n");
     void* vaddr=malloc_page(PF_KERNEL,pg_cnt);
+    put_str("get_kernel_pages: vaddr=");
+    put_int((uint32_t)vaddr);
+    put_str("\n");
     if(vaddr!=NULL)
     {
         memset(vaddr,0,pg_cnt*PG_SIZE);

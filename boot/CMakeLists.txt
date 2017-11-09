@@ -6,9 +6,9 @@ if (WIN32)
     set(CMAKE_ASM_NASM_COMPILER "D:/MySoftWare/chocolatey_package/bin/")
 endif ()
 
-#set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -f bin -l ~/<OBJECT>.txt")
+set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -f bin -l${PROJECT_SOURCE_DIR}/bin/loader.map")
 #只是生成汇编的预处理文件
-set(CMAKE_ASM_NASM_FLAGS "")
+
 #set(CMAKE_ASM_NASM_LINK_EXECUTABLE "ld <FLAGS> <CMAKE_ASM_NASM_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>")
 #这个地方不需要连接的过程 原本的程序是调用了两次nasm 会报错
 #set(CMAKE_ASM_NASM_LINK_EXECUTABLE "cp <OBJECTS>  <TARGET>")
