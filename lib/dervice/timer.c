@@ -5,10 +5,11 @@
 #include "timer.h"
 #include "../../kernel/print.h"
 #include "../../kernel/io.c"
+#include "stdint.h"
 #define IRQ0_FRQ 20
 #define INPUT_FRQ 1193180
 
-#define COUTER0_VALUE INPUT_FRQ/IRQ0_FRQ
+#define COUTER0_VALUE (INPUT_FRQ/IRQ0_FRQ)
 #define COUNTER0_PORT 0X40
 #define COUNTER0_NO 0
 #define COUNTER_MODE 2

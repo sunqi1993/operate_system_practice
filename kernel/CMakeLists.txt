@@ -27,9 +27,7 @@ enable_language(ASM_NASM)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 
-set(USE_C_FLAGS "-c -g -m32 -fno-builtin")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_C_FLAGS}")
 
 set(KERNEL_LINK_FLAGS  "-Ttext 0xc0001500 -melf_i386 -e main -Map=${PROJECT_SOURCE_DIR}/bin/kernel.map")
 
