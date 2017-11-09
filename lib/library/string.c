@@ -13,6 +13,7 @@
 /*将dst_起始的size个字节置为value*/
 void memset(void* dst_,uint8_t value,uint32_t size)
 {
+#ifdef DEBUG
     put_str("memset params:");
     put_int(dst_);
     put_str(" ");
@@ -20,6 +21,7 @@ void memset(void* dst_,uint8_t value,uint32_t size)
     put_str(" ");
     put_int(size);
     put_str("\n");
+#endif
     ASSERT( dst_);  //判断指针是否为空
     uint8_t* dst=(uint8_t*)dst_;
     while (size-->0)

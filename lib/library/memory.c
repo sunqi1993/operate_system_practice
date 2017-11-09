@@ -101,6 +101,7 @@ static void mem_pool_init(uint32_t all_mem)
     user_pool.pool_bitmap.bits=(void*)(MEM_BITMAP_BASE+kbm_length);
 
     /*输出内存池信息*/
+#ifdef DEBUG
     put_str("\nkernel_pool bitmap start:");
     put_int((int)kernel_pool.pool_bitmap.bits);
     put_str(" kernel_pool_phy_addr start:");
@@ -112,7 +113,7 @@ static void mem_pool_init(uint32_t all_mem)
     put_str(" user_pool_phy_addr_start:");
     put_int((int)user_pool.phy_addr_start);
     put_str("\n");
-
+#endif
     /*将位图置0*/
     bitmap_init(&kernel_pool.pool_bitmap);
     bitmap_init(&user_pool.pool_bitmap);
@@ -313,11 +314,14 @@ void* malloc_page(enum pool_flags pf,uint32_t pg_cnt)
 
 void* get_kernel_pages(uint32_t pg_cnt)
 {
-    put_str("get_kernel_pages start\n");
     void* vaddr=malloc_page(PF_KERNEL,pg_cnt);
+#ifdef DEBUG
+    put_str("get_kernel_pages start\n");
+
     put_str("get_kernel_pages: vaddr=");
     put_int((uint32_t)vaddr);
     put_str("\n");
+#endif
     if(vaddr!=NULL)
     {
         memset(vaddr,0,pg_cnt*PG_SIZE);
