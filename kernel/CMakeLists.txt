@@ -1,7 +1,8 @@
 #头文件包含的目录 使用nasm的时候 由于目录不以 dir/ 结束所以无效 yasm是nasm的兼容版 没有这个bug
 include_directories(
         .
-        ../lib/dervice
+        ../lib
+        ../lib/device
         ../lib/io
         ../lib/library
 )
