@@ -1,7 +1,8 @@
-#头文件包含的目录 使用nasm的时候 由于目录不以 dir/ 结束所以无效 yasm是nasm的兼容版 没有这个bug
+#头文件包含的目录 使用NASM的时候 由于目录不以 dir/ 结束所以无效 NASM是NASM的兼容版 没有这个bug
 include_directories(
         .
-        ../lib/dervice
+        ../lib
+        ../lib/device
         ../lib/io
         ../lib/library
 )
@@ -15,7 +16,7 @@ if (WIN32)
     set(CMAKE_ASM_NASM_COMPILER "D:/MySoftWare/chocolatey_package/bin")
 endif ()
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES>  -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} <FLAGS> -o <OBJECT> <SOURCE>")
-set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS nasm asm S)
+set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS NASM asm S)
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf)
 set(CMAKE_ASM_NASM_FLAGS "-f elf")
 

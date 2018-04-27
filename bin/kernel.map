@@ -218,7 +218,7 @@ LOAD ../../build_lib/liblibrary.a
                 [!provide]                        PROVIDE (_etext, .)
                 [!provide]                        PROVIDE (etext, .)
 
-.rodata         0x00000000c0002e38      0x57b
+.rodata         0x00000000c0002e38      0x597
  *(.rodata .rodata.* .gnu.linkonce.r.*)
  .rodata        0x00000000c0002e38       0x7c CMakeFiles/kernel.dir/debug.c.o
  .rodata        0x00000000c0002eb4        0xa CMakeFiles/kernel.dir/init.c.o
@@ -228,9 +228,9 @@ LOAD ../../build_lib/liblibrary.a
  .rodata        0x00000000c0003124       0x34 CMakeFiles/kernel.dir/main.c.o
  .rodata        0x00000000c0003158       0x13 ../../build_lib/libtimer.a(timer.c.o)
  *fill*         0x00000000c000316b        0x1 
- .rodata        0x00000000c000316c       0xe4 ../../build_lib/liblibrary.a(memory.c.o)
- .rodata        0x00000000c0003250       0xe4 ../../build_lib/liblibrary.a(string.c.o)
- .rodata        0x00000000c0003334       0x7f ../../build_lib/liblibrary.a(bitmap.c.o)
+ .rodata        0x00000000c000316c       0xf0 ../../build_lib/liblibrary.a(memory.c.o)
+ .rodata        0x00000000c000325c       0xec ../../build_lib/liblibrary.a(string.c.o)
+ .rodata        0x00000000c0003348       0x87 ../../build_lib/liblibrary.a(bitmap.c.o)
 
 .rodata1
  *(.rodata1)
@@ -239,22 +239,22 @@ LOAD ../../build_lib/liblibrary.a
  *(.eh_frame_hdr)
  *(.eh_frame_entry .eh_frame_entry.*)
 
-.eh_frame       0x00000000c00033b4      0x5cc
+.eh_frame       0x00000000c00033d0      0x5cc
  *(.eh_frame)
- .eh_frame      0x00000000c00033b4       0x48 CMakeFiles/kernel.dir/debug.c.o
- .eh_frame      0x00000000c00033fc       0x24 CMakeFiles/kernel.dir/init.c.o
+ .eh_frame      0x00000000c00033d0       0x48 CMakeFiles/kernel.dir/debug.c.o
+ .eh_frame      0x00000000c0003418       0x24 CMakeFiles/kernel.dir/init.c.o
                                          0x50 (松开之前的大小)
- .eh_frame      0x00000000c0003420      0x194 CMakeFiles/kernel.dir/interrupt.c.o
+ .eh_frame      0x00000000c000343c      0x194 CMakeFiles/kernel.dir/interrupt.c.o
                                         0x1c0 (松开之前的大小)
- .eh_frame      0x00000000c00035b4       0x28 CMakeFiles/kernel.dir/main.c.o
+ .eh_frame      0x00000000c00035d0       0x28 CMakeFiles/kernel.dir/main.c.o
                                          0x54 (松开之前的大小)
- .eh_frame      0x00000000c00035dc       0x6c ../../build_lib/libtimer.a(timer.c.o)
+ .eh_frame      0x00000000c00035f8       0x6c ../../build_lib/libtimer.a(timer.c.o)
                                          0x98 (松开之前的大小)
- .eh_frame      0x00000000c0003648      0x13c ../../build_lib/liblibrary.a(memory.c.o)
+ .eh_frame      0x00000000c0003664      0x13c ../../build_lib/liblibrary.a(memory.c.o)
                                         0x17c (松开之前的大小)
- .eh_frame      0x00000000c0003784      0x168 ../../build_lib/liblibrary.a(string.c.o)
+ .eh_frame      0x00000000c00037a0      0x168 ../../build_lib/liblibrary.a(string.c.o)
                                         0x194 (松开之前的大小)
- .eh_frame      0x00000000c00038ec       0x94 ../../build_lib/liblibrary.a(bitmap.c.o)
+ .eh_frame      0x00000000c0003908       0x94 ../../build_lib/liblibrary.a(bitmap.c.o)
                                          0xc0 (松开之前的大小)
  *(.eh_frame.*)
 
@@ -485,41 +485,41 @@ LOAD ../../build_lib/liblibrary.a
  .debug_abbrev  0x0000000000000669      0x11c ../../build_lib/liblibrary.a(string.c.o)
  .debug_abbrev  0x0000000000000785      0x142 ../../build_lib/liblibrary.a(bitmap.c.o)
 
-.debug_line     0x0000000000000000      0x9ac
+.debug_line     0x0000000000000000      0xb83
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x0000000000000000       0x90 CMakeFiles/kernel.dir/debug.c.o
- .debug_line    0x0000000000000090       0xcb CMakeFiles/kernel.dir/init.c.o
- .debug_line    0x000000000000015b      0x14f CMakeFiles/kernel.dir/interrupt.c.o
- .debug_line    0x00000000000002aa       0x1d CMakeFiles/kernel.dir/io.c.o
- .debug_line    0x00000000000002c7       0xed CMakeFiles/kernel.dir/main.c.o
- .debug_line    0x00000000000003b4       0xec ../../build_lib/libtimer.a(timer.c.o)
- .debug_line    0x00000000000004a0      0x1cd ../../build_lib/liblibrary.a(memory.c.o)
- .debug_line    0x000000000000066d      0x1fa ../../build_lib/liblibrary.a(string.c.o)
- .debug_line    0x0000000000000867      0x145 ../../build_lib/liblibrary.a(bitmap.c.o)
+ .debug_line    0x0000000000000000       0x9a CMakeFiles/kernel.dir/debug.c.o
+ .debug_line    0x000000000000009a       0xdf CMakeFiles/kernel.dir/init.c.o
+ .debug_line    0x0000000000000179      0x190 CMakeFiles/kernel.dir/interrupt.c.o
+ .debug_line    0x0000000000000309       0x1d CMakeFiles/kernel.dir/io.c.o
+ .debug_line    0x0000000000000326      0x138 CMakeFiles/kernel.dir/main.c.o
+ .debug_line    0x000000000000045e      0x135 ../../build_lib/libtimer.a(timer.c.o)
+ .debug_line    0x0000000000000593      0x219 ../../build_lib/liblibrary.a(memory.c.o)
+ .debug_line    0x00000000000007ac      0x246 ../../build_lib/liblibrary.a(string.c.o)
+ .debug_line    0x00000000000009f2      0x191 ../../build_lib/liblibrary.a(bitmap.c.o)
 
 .debug_frame
  *(.debug_frame)
 
-.debug_str      0x0000000000000000      0x795
+.debug_str      0x0000000000000000      0x7eb
  *(.debug_str)
- .debug_str     0x0000000000000000      0x139 CMakeFiles/kernel.dir/debug.c.o
-                                        0x164 (松开之前的大小)
- .debug_str     0x0000000000000139       0x73 CMakeFiles/kernel.dir/init.c.o
-                                        0x179 (松开之前的大小)
- .debug_str     0x00000000000001ac      0x19e CMakeFiles/kernel.dir/interrupt.c.o
-                                        0x2ab (松开之前的大小)
- .debug_str     0x000000000000034a       0x38 CMakeFiles/kernel.dir/io.c.o
-                                         0xeb (松开之前的大小)
- .debug_str     0x0000000000000382       0x3f CMakeFiles/kernel.dir/main.c.o
-                                        0x183 (松开之前的大小)
- .debug_str     0x00000000000003c1       0x87 ../../build_lib/libtimer.a(timer.c.o)
-                                        0x15a (松开之前的大小)
- .debug_str     0x0000000000000448      0x1f6 ../../build_lib/liblibrary.a(memory.c.o)
-                                        0x37f (松开之前的大小)
- .debug_str     0x000000000000063e       0xa5 ../../build_lib/liblibrary.a(string.c.o)
-                                        0x1d2 (松开之前的大小)
- .debug_str     0x00000000000006e3       0xb2 ../../build_lib/liblibrary.a(bitmap.c.o)
-                                        0x213 (松开之前的大小)
+ .debug_str     0x0000000000000000      0x140 CMakeFiles/kernel.dir/debug.c.o
+                                        0x16b (松开之前的大小)
+ .debug_str     0x0000000000000140       0x7d CMakeFiles/kernel.dir/init.c.o
+                                        0x180 (松开之前的大小)
+ .debug_str     0x00000000000001bd      0x1a8 CMakeFiles/kernel.dir/interrupt.c.o
+                                        0x2b2 (松开之前的大小)
+ .debug_str     0x0000000000000365       0x42 CMakeFiles/kernel.dir/io.c.o
+                                         0xf2 (松开之前的大小)
+ .debug_str     0x00000000000003a7       0x49 CMakeFiles/kernel.dir/main.c.o
+                                        0x18a (松开之前的大小)
+ .debug_str     0x00000000000003f0       0x90 ../../build_lib/libtimer.a(timer.c.o)
+                                        0x160 (松开之前的大小)
+ .debug_str     0x0000000000000480      0x200 ../../build_lib/liblibrary.a(memory.c.o)
+                                        0x386 (松开之前的大小)
+ .debug_str     0x0000000000000680       0xaf ../../build_lib/liblibrary.a(string.c.o)
+                                        0x1d9 (松开之前的大小)
+ .debug_str     0x000000000000072f       0xbc ../../build_lib/liblibrary.a(bitmap.c.o)
+                                        0x21a (松开之前的大小)
 
 .debug_loc
  *(.debug_loc)

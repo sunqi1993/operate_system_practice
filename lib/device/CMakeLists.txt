@@ -1,5 +1,6 @@
 include_directories(
         ../io
+        ../
 )
 
 #只编译不连接
