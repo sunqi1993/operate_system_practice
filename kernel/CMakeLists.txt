@@ -12,15 +12,12 @@ file(GLOB src
         *.S
         )
 
-if (WIN32)
-    set(CMAKE_ASM_NASM_COMPILER "D:/MySoftWare/chocolatey_package/bin")
-endif ()
+
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES>  -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} <FLAGS> -o <OBJECT> <SOURCE>")
 set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS nasm asm S)
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf)
 set(CMAKE_ASM_NASM_FLAGS "-f elf")
-
-
+set(CMAKE_ASM_NASM_LINK_EXECUTABLE "cp <OBJECTS>  <TARGET> ")
 
 enable_language(ASM_NASM)
 
@@ -30,7 +27,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 
 
-set(KERNEL_LINK_FLAGS  "-Ttext 0xc0001500 -melf_i386 -e main -Map=${PROJECT_SOURCE_DIR}/bin/kernel.map")
+set(KERNEL_LINK_FLAGS  "-Ttext 0xc0001500 -M -m elf_i386  -e main -Map=${PROJECT_SOURCE_DIR}/bin/kernel.map")
 
 set(CMAKE_C_LINK_EXECUTABLE  "ld ${KERNEL_LINK_FLAGS}  -o <TARGET> <OBJECTS> <LINK_LIBRARIES>")
 
