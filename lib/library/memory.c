@@ -6,14 +6,14 @@
 #include <debug.h>
 #include "memory.h"
 #include "stdint.h"
-#include "print.h"
+#include "asm_print.h"
 #include "string.h"
 
 #define PG_SIZE 4096
 //地址线的最高10位表示页目录表
 #define PDE_IDX(addr)  ((addr&0xffc00000)>>22)
 //地址线的12-23位表示 页的序列偏移地址
-#define PTE_IDX(addr)  ((addr&0x3ff000)>>12)
+#define PTE_IDX(addr)  ((addr&0x003ff000)>>12)
 
 
 /*位图地址：
@@ -51,8 +51,10 @@ struct virtual_addr kernel_vaddr;   //此结构用来给内核分配虚拟地址
 /*初始化内存池*/
 static void mem_pool_init(uint32_t all_mem)
 {
-    put_str("mem_pool_init start!\n");
 
+#ifdef DEBUG
+    put_str("mem_pool_init start!\n");
+#endif
     /* 页表的大小 1页的目录表+第0-768个页目录项指向同一个页表
      * 769-1022页目录项共指向254个页表，一共256个页框
      */
@@ -93,8 +95,11 @@ static void mem_pool_init(uint32_t all_mem)
      * 内核使用的最高地址是0xc009f000 这是主线程的栈地址
      * 内核的大小预计为70kb
      * 32M内存占用的位图为1kb
-     *
+     *a000->e000 共计16k 可以对应16*32=512M的内存空间
      * 内核内存池的位图定义在0xc009a000处 0xc009a000-0xc009e000 预留4*4K位图空间 512M的内存位图便于管理
+     *
+     * bitmap的分布应该在a000~e000 这16K空间内
+     *  kernel_bitmap  user_bitmap  kernel_vaddr_bitmap 这样分布的
      */
     kernel_pool.pool_bitmap.bits=(void*)MEM_BITMAP_BASE;
     /*用户内存池紧跟在内核内存池后面*/
@@ -122,22 +127,30 @@ static void mem_pool_init(uint32_t all_mem)
     kernel_vaddr.vaddr_bitmap.bitmap_bytes_len=kbm_length;
 
     /*位图的数组指向一块为使用的位图*/
-    kernel_vaddr.vaddr_bitmap.bits=(void*)(MEM_BITMAP_BASE+kbm_length+ubm_length);
+    kernel_vaddr.vaddr_bitmap.bits=(void*)( MEM_BITMAP_BASE+kbm_length+ubm_length);
 
     kernel_vaddr.vaddr_start=K_HEAP_START;
 
     bitmap_init(&kernel_vaddr.vaddr_bitmap);
-    put_str("   mem_pool_init done!\n");
 
+#ifdef DEBUG
+    put_str("   mem_pool_init done!\n");
+#endif
 }
 
 
 void mem_init()
 {
-    put_str("mem_init start\n");
     uint32_t mem_bytes_total=(*(uint32_t*)(0xb00));
-    mem_pool_init(mem_bytes_total);
+#ifdef memInit
+    put_str("mem_init start\n");
+    put_str("the total memory is 0x");
+    put_int(mem_bytes_total);
+    put_str("\n");
     put_str("mem_init done!\n");
+#endif
+    mem_pool_init(mem_bytes_total);
+
 }
 
 /*
@@ -150,22 +163,23 @@ static void* vaddr_get(enum pool_flags pf,uint32_t pg_cnt)
     uint32_t  cnt=0;
     if (pf==PF_KERNEL)
     {
-        bit_idx_start=bitmap_check_bit_idx(&kernel_vaddr.vaddr_bitmap,pg_cnt);
+        bit_idx_start=bitmap_scan(&kernel_vaddr.vaddr_bitmap,pg_cnt);
         if(bit_idx_start==-1)
             return NULL;
 
         while (cnt<pg_cnt)
         {
-            bitmap_set(&kernel_vaddr.vaddr_bitmap,bit_idx_start+cnt++,1);
+            bitmap_set(&kernel_vaddr.vaddr_bitmap,bit_idx_start+cnt,1);
+            cnt++;
         }
         //计算出申请的空间的地址
         vaddr_start=kernel_vaddr.vaddr_start+bit_idx_start*PG_SIZE;
-        #ifdef DEBUG
-        put_str("vaddr_get info: bit_idx vaddr");
-        put_int(bit_idx_start);
-        put_str("  ");
+        #ifdef vaddrGet
+        put_str("this is vaddr:0x");
         put_int(vaddr_start);
-        put_str("\n");
+        put_str("  ");
+        put_int(bit_idx_start);
+        put_str(" \n");
         #endif
 
     } else{
@@ -181,10 +195,8 @@ uint32_t* pte_ptr(uint32_t vaddr)
     /*
      * 先把页目录当成也页表访问 找出原地址对应的页表地址
      * */
-    uint32_t* pte=(uint32_t*)(0xffc00000+\
-                            ((vaddr&0xffc00000)>>10)+\
-                             PTE_IDX(vaddr)*4
-                            );
+    uint32_t* pte=(uint32_t*)(0xffc00000+ ((vaddr&0xffc00000)>>10) + PTE_IDX(vaddr)*4);
+
     return pte;
 }
 
@@ -192,6 +204,7 @@ uint32_t* pte_ptr(uint32_t vaddr)
 uint32_t* pde_ptr(uint32_t  vaddr)
 {
     uint32_t* pde=(uint32_t*)(0xfffff000+ PDE_IDX(vaddr)*4);
+
     return  pde;
 }
 
@@ -224,9 +237,9 @@ static void page_table_map(void* _vaddr,void* _page_phyaddr)
     uint32_t *pde=pde_ptr(vaddr);
 
 
-#ifdef DEBUG
-put_str("\npage_table_map params:vaddr page_phyaddr *pde *pte \n");
-put_int((int)vaddr);
+    #ifdef page_tabel_DEBUG
+    put_str("\npage_table_map params:vaddr page_phyaddr pde pte \n");
+    put_int((int)vaddr);
     put_str(" ");
     put_int((uint32_t)page_phyaddr);
     put_str(" ");
@@ -243,11 +256,11 @@ put_int((int)vaddr);
     /*所在目录 判断目录项的p位是否是1，若为1表示该表已经存在*/
     if(*pde & 0x00000001)
     {
-        ASSERT(!(*pte&0x00000001));
+        ASSERT(!(*pte & 0x00000001));
         //页目录项和页表项的P位为1 此处判断页目录项是否存在
 
 
-        if(!(*pte&0x00000001))
+        if(!(*pte & 0x00000001))
         {
             //页表不存在的话就需要创建页表
             // US=1 RW=1 P=1
@@ -264,8 +277,8 @@ put_int((int)vaddr);
         uint32_t pde_phyaddr=(uint32_t)palloc(&kernel_pool);
         *pde=(page_phyaddr|PG_US_S|PG_RW_W|PG_P_1);
         //将页表对应的地址的整个4K数据都清除为0
-        memset((void*)((int)pte & 0xfffff000),0,PG_SIZE);
-        ASSERT(!(*pte&0x00000001));
+        memset((void*)((uint32_t)pte & 0xfffff000),0,PG_SIZE);
+        ASSERT(!((*pte)&0x00000001));
         //既然页目录不存在 就往页表上随意写地址了
         *pte=(page_phyaddr|PG_US_U,PG_RW_W|PG_P_1);
     }
@@ -296,7 +309,7 @@ void* malloc_page(enum pool_flags pf,uint32_t pg_cnt)
             //失败的时候要将已经申请的虚拟地址和物理页全部回滚，在将来完成内存回收的时候再进行补充
             return NULL;
         }
-        #ifdef DEBUG
+        #ifdef mallocPageDEBUG
         put_str("malloc_page params:");
         put_int(vaddr);
         put_str(" ");
@@ -315,7 +328,7 @@ void* malloc_page(enum pool_flags pf,uint32_t pg_cnt)
 void* get_kernel_pages(uint32_t pg_cnt)
 {
     void* vaddr=malloc_page(PF_KERNEL,pg_cnt);
-#ifdef DEBUG
+#ifdef getKernelPage
     put_str("get_kernel_pages start\n");
 
     put_str("get_kernel_pages: vaddr=");

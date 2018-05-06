@@ -7,7 +7,7 @@
 
 
 #include "interrupt.h"
-#include "print.h"
+#include "asm_print.h"
 
 void panic_spin(char* filename,int line,const char* func,const char* condition);
 

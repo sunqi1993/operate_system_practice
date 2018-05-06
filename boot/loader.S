@@ -175,7 +175,7 @@ p_mode_start:
 
    ; 打开cr0的pg位(第31位)
    mov eax, cr0
-   or eax, 0x80000000
+   or eax, 0x1<<31
    mov cr0, eax
 
    ;在开启分页后,用gdt新的地址重新加载

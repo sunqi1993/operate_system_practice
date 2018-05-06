@@ -19,14 +19,21 @@ enum pool_flags{
     PF_KERNEL=1,
     PF_USER=2
 };
-
+#ifdef __cplusplus
+extern "C"{
+    #endif
 
 extern struct pool kernel_pool,user_pool;
 
 extern struct virtual_addr kernel_vaddr;
 
+
 void mem_init();
 
 void* get_kernel_pages(uint32_t pg_cnt);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif //SYSTEM_MEMORY_H

@@ -6,11 +6,9 @@ extern put_str   ;声明外部函数
 extern interruptFunction_table ;引用外部定义的中断函数向量表
 
 section .data
-intr_str db "interrupt occur!",0xa,0
+intr_str db "interrupt occur",0xa,0;
 global intr_entry_table
 intr_entry_table:
-
-
 %macro VECTOR 2
 section .text
 intr%1entry:       ;每个中断都要压入中断向量号自己知道自己的中断向量号是多少

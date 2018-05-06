@@ -4,7 +4,6 @@
 
 #ifndef SYSTEM_INTERRUPT_H
 #define SYSTEM_INTERRUPT_H
-
 #include "stdint.h"
 
 
@@ -57,5 +56,5 @@ enum intr_status intr_get_status();
 enum intr_status intr_enale();
 enum intr_status intr_disable();
 enum intr_status intr_set_status(enum intr_status status);
-
+void register_handler(uint8_t irq_num,intr_handler function);
 #endif //SYSTEM_INTERRUPT_H

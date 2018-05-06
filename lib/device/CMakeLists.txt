@@ -1,6 +1,7 @@
 include_directories(
         ../io
         ../
+        ../../kernel
 )
 
 #只编译不连接

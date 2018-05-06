@@ -3,9 +3,12 @@
 //
 
 #include "timer.h"
-#include "../../kernel/print.h"
+#include "asm_print.h"
 #include "../../kernel/io.c"
 #include "stdint.h"
+#include "thread.h"
+#include "debug.h"
+#include "interrupt.h"
 #define IRQ0_FRQ 20
 #define INPUT_FRQ 1193180
 
@@ -34,9 +37,30 @@ static  void freq_set(uint8_t counter_port,uint8_t counter_no,uint8_t rwl,uint8_
     outb(counter_port,(uint8_t)(counter_value>>8));
 }
 
+
+
+
+uint32_t ticks;
+
+static void intr_timer_handler()
+{
+    struct task_struct* cur_task=running_thread();
+    ASSERT(cur_task->stack_magic==MagicNumber);
+    cur_task->elapsed_ticks++;
+    ticks++;
+
+    if (cur_task->ticks==0)
+    {
+        schedule();
+    } else{
+        cur_task->ticks--;
+    }
+}
+
 void timer_init()
 {
-    put_str("timer init start.\n");
+
     /*初始化定时器的定时器0*/
     freq_set(COUNTER0_PORT,COUNTER0_NO,READ_WRITE_LATCH,COUNTER_MODE,COUTER0_VALUE);
+    register_handler(0x20,intr_timer_handler);
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/zsh
 
 
-disk=/home/sunqi/Desktop/operate_system_practice/hd60M.img
+disk=./hd60M.img
 
 cd `dirname $0`
 echo 当前文件位置 $(pwd)

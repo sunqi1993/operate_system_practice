@@ -21,11 +21,37 @@ static void general_intr_handler(uint32_t irq_num)
 {
     //IRQ7 15会产生伪中断 无需处理 0x3f是从片上的最后一个IRQ引脚，保留项
     if(irq_num==0x27 || irq_num==0x2f) return;
+    //清除一片异常区域打印异常信息
+    set_pos(1,1);
+    int cur_pos=0;
+    for (int i = 0; i < 320; ++i)
+    {
+        put_char(' ');
+    }
+
+    set_pos(1,1);
+    put_str("!!! exception message begin !!!\n");
+
+    set_pos(2,8);//从第二行第八个字符开始打印
+
     put_str("iqr_num:0x");
     put_int(irq_num);
     put_str("  ");
     put_str(intr_name[irq_num]);
     put_char('\n');
+
+    if(irq_num==14)
+    {
+        int page_fault_vaddr=0;
+        asm("movl %%cr2,%0":"=r"(page_fault_vaddr));
+        put_str("\npage fault addr is");
+        put_int(page_fault_vaddr);
+    }
+
+    put_str("\n!!! exception message end !!!\n");
+
+//    while (1);
+
 }
 
 /*一般中断处理函数的注册 以及异常名称的注册*/
@@ -76,7 +102,6 @@ static void idt_desc_init()
     for (int i = 0; i <IDT_DESC_CNT ; i++) {
         make_idt_desc(&idt[i],IDT_DESC_ATTR_DPL0,intr_entry_table[i]);
     }
-    put_str("idt_desc_init done\n");
 }
 
 /*8259中断芯片主片从片初始化的设置*/
@@ -99,21 +124,20 @@ static void pic_init()
     outb(PIC_M_DATA,0xfe);    //主片屏蔽IR1-7 只开放了时钟中断
     outb(PIC_S_DATA,0xff);    //从片屏蔽所有中断
 
-    put_str("pic_init done!\n");
 
 }
 
 //完成有关中断的所有初始化工作
 void  idt_init()
 {
-    put_str("idt_init start\n");
+
     idt_desc_init();   //初始化中断描述表
     exception_init();  //异常名称初始化通常的中断处理函数
     pic_init(); //初始化8259A
     //加载idt idt的个数
     uint64_t idt_operand=((sizeof(idt)-1)|((uint64_t)((uint32_t)idt)<<16));
     asm volatile("lidt %0"::"m" (idt_operand));
-    put_str("idt_init done\n");
+
 }
 
 /*获取当前的中断状态*/
@@ -162,4 +186,10 @@ enum intr_status intr_disable()
 enum intr_status intr_set_status(enum intr_status status)
 {
     return status & INTR_ON ? intr_enale():intr_disable();
+}
+
+/*在中断处理程序数组中安装中断处理程序*/
+void register_handler(uint8_t irq_num,intr_handler function)
+{
+    interruptFunction_table[irq_num]=function;
 }

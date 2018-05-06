@@ -9,16 +9,20 @@
 #include "stdint.h"
 
 
-
+#define cxx_begin (#ifdef __cplusplus extern "C"{   #endif)
+#define cxx_end (#ifdef __cplusplus }; #endif)
 /*将dst_起始的size个字节置为value*/
+
+
+
 void memset(void* dst_,uint8_t value,uint32_t size)
 {
 #ifdef DEBUG
-    put_str("memset params:");
+    put_str("memset params:0x");
     put_int(dst_);
     put_str(" ");
     put_int(value);
-    put_str(" ");
+    put_str(" size:0x");
     put_int(size);
     put_str("\n");
 #endif
@@ -32,7 +36,7 @@ void memset(void* dst_,uint8_t value,uint32_t size)
 /*将src开始的size个字节复制到dst*/
 void memcpy(void* dst_, const void* src_,uint32_t size)
 {
-    ASSERT(dst_ &&  src_);
+    ASSERT(dst_ && src_);
     uint8_t *dst=(uint8_t*)dst_;
     const uint8_t *src=src_;
     while (size-->0)
