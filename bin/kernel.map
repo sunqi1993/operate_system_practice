@@ -7,17 +7,21 @@
 ../../build_lib/liblibrary.a(memory.c.o)
                               CMakeFiles/kernel.dir/init.c.o (mem_init)
 ../../build_lib/liblibrary.a(string.c.o)
-                              ../../build_lib/liblibrary.a(memory.c.o) (memset)
+                              CMakeFiles/kernel.dir/thread.c.o (memset)
 ../../build_lib/liblibrary.a(bitmap.c.o)
                               ../../build_lib/liblibrary.a(memory.c.o) (bitmap_init)
 
 分配公共符号
 公共符号            大小              文件
 
+thread_ready_list   0x10              CMakeFiles/kernel.dir/thread.c.o
+thread_all_list     0x10              CMakeFiles/kernel.dir/thread.c.o
 user_pool           0x10              ../../build_lib/liblibrary.a(memory.c.o)
 interruptFunction_table
                     0x84              CMakeFiles/kernel.dir/debug.c.o
 intr_name           0x84              CMakeFiles/kernel.dir/debug.c.o
+main_thread         0x4               CMakeFiles/kernel.dir/thread.c.o
+ticks               0x4               ../../build_lib/libtimer.a(timer.c.o)
 kernel_vaddr        0xc               ../../build_lib/liblibrary.a(memory.c.o)
 kernel_pool         0x10              ../../build_lib/liblibrary.a(memory.c.o)
 
@@ -33,19 +37,45 @@ kernel_pool         0x10              ../../build_lib/liblibrary.a(memory.c.o)
                 0x0000000000000000        0x0 CMakeFiles/kernel.dir/init.c.o
  .group         0x0000000000000000        0x8 CMakeFiles/kernel.dir/interrupt.c.o
  .group         0x0000000000000000        0x8 CMakeFiles/kernel.dir/interrupt.c.o
+ .group         0x0000000000000000        0x8 CMakeFiles/kernel.dir/interrupt.c.o
  .text.__x86.get_pc_thunk.bx
                 0x0000000000000000        0x4 CMakeFiles/kernel.dir/interrupt.c.o
  .note.GNU-stack
                 0x0000000000000000        0x0 CMakeFiles/kernel.dir/interrupt.c.o
  .note.GNU-stack
                 0x0000000000000000        0x0 CMakeFiles/kernel.dir/io.c.o
+ .group         0x0000000000000000        0x8 CMakeFiles/kernel.dir/list.c.o
+ .group         0x0000000000000000        0x8 CMakeFiles/kernel.dir/list.c.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 CMakeFiles/kernel.dir/list.c.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 CMakeFiles/kernel.dir/list.c.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 CMakeFiles/kernel.dir/list.c.o
  .group         0x0000000000000000        0x8 CMakeFiles/kernel.dir/main.c.o
  .text.__x86.get_pc_thunk.bx
                 0x0000000000000000        0x4 CMakeFiles/kernel.dir/main.c.o
  .note.GNU-stack
                 0x0000000000000000        0x0 CMakeFiles/kernel.dir/main.c.o
+ .group         0x0000000000000000        0x8 CMakeFiles/kernel.dir/print.c.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 CMakeFiles/kernel.dir/print.c.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 CMakeFiles/kernel.dir/print.c.o
+ .group         0x0000000000000000        0x8 CMakeFiles/kernel.dir/thread.c.o
+ .group         0x0000000000000000        0x8 CMakeFiles/kernel.dir/thread.c.o
+ .group         0x0000000000000000        0x8 CMakeFiles/kernel.dir/thread.c.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 CMakeFiles/kernel.dir/thread.c.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 CMakeFiles/kernel.dir/thread.c.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 CMakeFiles/kernel.dir/thread.c.o
+ .group         0x0000000000000000        0x8 ../../build_lib/libtimer.a(timer.c.o)
  .group         0x0000000000000000        0x8 ../../build_lib/libtimer.a(timer.c.o)
  .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 ../../build_lib/libtimer.a(timer.c.o)
+ .text.__x86.get_pc_thunk.bx
                 0x0000000000000000        0x4 ../../build_lib/libtimer.a(timer.c.o)
  .note.GNU-stack
                 0x0000000000000000        0x0 ../../build_lib/libtimer.a(timer.c.o)
@@ -80,7 +110,11 @@ LOAD CMakeFiles/kernel.dir/debug.c.o
 LOAD CMakeFiles/kernel.dir/init.c.o
 LOAD CMakeFiles/kernel.dir/interrupt.c.o
 LOAD CMakeFiles/kernel.dir/io.c.o
+LOAD CMakeFiles/kernel.dir/list.c.o
 LOAD CMakeFiles/kernel.dir/main.c.o
+LOAD CMakeFiles/kernel.dir/print.c.o
+LOAD CMakeFiles/kernel.dir/thread.c.o
+LOAD CMakeFiles/kernel.dir/switch.S.o
 LOAD CMakeFiles/kernel.dir/vector.S.o
 LOAD ../../build_lib/libio.a
 LOAD ../../build_lib/libtimer.a
@@ -153,7 +187,7 @@ LOAD ../../build_lib/liblibrary.a
 .plt.sec
  *(.plt.sec)
 
-.text           0x00000000c0001500     0x1938
+.text           0x00000000c0001500     0x23b2
  *(.text.unlikely .text.*_unlikely .text.unlikely.*)
  *(.text.exit .text.exit.*)
  *(.text.startup .text.startup.*)
@@ -164,52 +198,86 @@ LOAD ../../build_lib/liblibrary.a
  .text.__x86.get_pc_thunk.bx
                 0x00000000c0001618        0x4 CMakeFiles/kernel.dir/debug.c.o
                 0x00000000c0001618                __x86.get_pc_thunk.bx
- .text          0x00000000c000161c       0x39 CMakeFiles/kernel.dir/init.c.o
+ .text          0x00000000c000161c       0x28 CMakeFiles/kernel.dir/init.c.o
                 0x00000000c000161c                init_all
- .text          0x00000000c0001655      0x4b8 CMakeFiles/kernel.dir/interrupt.c.o
-                0x00000000c00019d4                idt_init
-                0x00000000c0001a54                intr_get_status
-                0x00000000c0001a82                intr_enale
-                0x00000000c0001ab5                intr_disable
-                0x00000000c0001ae8                intr_set_status
+ .text          0x00000000c0001644      0x548 CMakeFiles/kernel.dir/interrupt.c.o
+                0x00000000c0001a4e                idt_init
+                0x00000000c0001aaa                intr_get_status
+                0x00000000c0001ad8                intr_enale
+                0x00000000c0001b0b                intr_disable
+                0x00000000c0001b3e                intr_set_status
+                0x00000000c0001b63                register_handler
  .text.__x86.get_pc_thunk.ax
-                0x00000000c0001b0d        0x4 CMakeFiles/kernel.dir/interrupt.c.o
-                0x00000000c0001b0d                __x86.get_pc_thunk.ax
- .text          0x00000000c0001b11        0x0 CMakeFiles/kernel.dir/io.c.o
- .text          0x00000000c0001b11       0x7e CMakeFiles/kernel.dir/main.c.o
-                0x00000000c0001b11                main
- *fill*         0x00000000c0001b8f        0x1 
- .text          0x00000000c0001b90      0x393 CMakeFiles/kernel.dir/vector.S.o
-                0x00000000c0001b90                intr_exit
- *fill*         0x00000000c0001f23        0xd 
- .text          0x00000000c0001f30      0x14e ../../build_lib/libio.a(print.S.o)
-                0x00000000c0001f30                put_str
-                0x00000000c0001f4e                put_char
-                0x00000000c000201b                put_int
- .text          0x00000000c000207e       0xfa ../../build_lib/libtimer.a(timer.c.o)
-                0x00000000c0002138                timer_init
- .text          0x00000000c0002178      0x593 ../../build_lib/liblibrary.a(memory.c.o)
-                0x00000000c00022fb                mem_init
-                0x00000000c00023e8                pte_ptr
-                0x00000000c0002422                pde_ptr
-                0x00000000c00025e8                malloc_page
-                0x00000000c00026c1                get_kernel_pages
- .text          0x00000000c000270b      0x4b1 ../../build_lib/liblibrary.a(string.c.o)
-                0x00000000c000270b                memset
-                0x00000000c0002773                memcpy
-                0x00000000c00027e9                memcmp
-                0x00000000c0002882                strcpy
-                0x00000000c00028f3                str_len
-                0x00000000c0002954                strcmp
-                0x00000000c00029e3                strchr
-                0x00000000c0002a51                strrchr
-                0x00000000c0002ac1                strcat
-                0x00000000c0002b41                strchrs
- .text          0x00000000c0002bbc      0x27c ../../build_lib/liblibrary.a(bitmap.c.o)
-                0x00000000c0002bbc                bitmap_init
-                0x00000000c0002bef                bitmap_check_bit_idx
-                0x00000000c0002c39                bitmap_scan
-                0x00000000c0002d75                bitmap_set
+                0x00000000c0001b8c        0x4 CMakeFiles/kernel.dir/interrupt.c.o
+                0x00000000c0001b8c                __x86.get_pc_thunk.ax
+ .text.__x86.get_pc_thunk.di
+                0x00000000c0001b90        0x4 CMakeFiles/kernel.dir/interrupt.c.o
+                0x00000000c0001b90                __x86.get_pc_thunk.di
+ .text          0x00000000c0001b94        0x0 CMakeFiles/kernel.dir/io.c.o
+ .text          0x00000000c0001b94      0x258 CMakeFiles/kernel.dir/list.c.o
+                0x00000000c0001b94                list_init
+                0x00000000c0001bcc                list_insert_before
+                0x00000000c0001c20                list_push
+                0x00000000c0001c48                list_append
+                0x00000000c0001c70                list_remove
+                0x00000000c0001cb9                list_pop
+                0x00000000c0001ce5                elem_find
+                0x00000000c0001d2a                list_traversal
+                0x00000000c0001d8a                list_len
+                0x00000000c0001dc9                list_empty
+ .text          0x00000000c0001dec      0x12e CMakeFiles/kernel.dir/main.c.o
+                0x00000000c0001dec                thread_a
+                0x00000000c0001e14                thread_b
+                0x00000000c0001e3c                check_intr_status
+                0x00000000c0001e88                main
+ .text          0x00000000c0001f1a       0xab CMakeFiles/kernel.dir/print.c.o
+                0x00000000c0001f1a                set_pos
+ .text          0x00000000c0001fc5      0x5e2 CMakeFiles/kernel.dir/thread.c.o
+                0x00000000c0001fe6                thread_create
+                0x00000000c000206a                init_thread
+                0x00000000c0002103                thread_start
+                0x00000000c0002269                running_thread
+                0x00000000c000232b                schedule
+                0x00000000c0002566                thread_init
+ .text.__x86.get_pc_thunk.dx
+                0x00000000c00025a7        0x4 CMakeFiles/kernel.dir/thread.c.o
+                0x00000000c00025a7                __x86.get_pc_thunk.dx
+ *fill*         0x00000000c00025ab        0x5 
+ .text          0x00000000c00025b0       0x15 CMakeFiles/kernel.dir/switch.S.o
+                0x00000000c00025b0                switch_to
+ *fill*         0x00000000c00025c5        0xb 
+ .text          0x00000000c00025d0      0x393 CMakeFiles/kernel.dir/vector.S.o
+                0x00000000c00025d0                intr_exit
+ *fill*         0x00000000c0002963        0xd 
+ .text          0x00000000c0002970      0x179 ../../build_lib/libio.a(print.S.o)
+                0x00000000c0002970                put_str
+                0x00000000c000298e                put_char
+                0x00000000c0002a5b                put_int
+                0x00000000c0002abe                set_screen_cursor
+ .text          0x00000000c0002ae9      0x189 ../../build_lib/libtimer.a(timer.c.o)
+                0x00000000c0002c34                timer_init
+ .text          0x00000000c0002c72      0x544 ../../build_lib/liblibrary.a(memory.c.o)
+                0x00000000c0002dd1                mem_init
+                0x00000000c0002e93                pte_ptr
+                0x00000000c0002ecd                pde_ptr
+                0x00000000c0003093                malloc_page
+                0x00000000c000316c                get_kernel_pages
+ .text          0x00000000c00031b6      0x4b1 ../../build_lib/liblibrary.a(string.c.o)
+                0x00000000c00031b6                memset
+                0x00000000c000321e                memcpy
+                0x00000000c0003294                memcmp
+                0x00000000c000332d                strcpy
+                0x00000000c000339e                str_len
+                0x00000000c00033ff                strcmp
+                0x00000000c000348e                strchr
+                0x00000000c00034fc                strrchr
+                0x00000000c000356c                strcat
+                0x00000000c00035ec                strchrs
+ .text          0x00000000c0003667      0x24b ../../build_lib/liblibrary.a(bitmap.c.o)
+                0x00000000c0003667                bitmap_init
+                0x00000000c000369a                bitmap_check_bit_idx
+                0x00000000c00036e4                bitmap_scan
+                0x00000000c00037ef                bitmap_set
  *(.gnu.warning)
 
 .fini
@@ -218,19 +286,19 @@ LOAD ../../build_lib/liblibrary.a
                 [!provide]                        PROVIDE (_etext, .)
                 [!provide]                        PROVIDE (etext, .)
 
-.rodata         0x00000000c0002e38      0x57b
+.rodata         0x00000000c00038b4      0x87b
  *(.rodata .rodata.* .gnu.linkonce.r.*)
- .rodata        0x00000000c0002e38       0x7c CMakeFiles/kernel.dir/debug.c.o
- .rodata        0x00000000c0002eb4        0xa CMakeFiles/kernel.dir/init.c.o
- *fill*         0x00000000c0002ebe        0x2 
- .rodata        0x00000000c0002ec0      0x261 CMakeFiles/kernel.dir/interrupt.c.o
- *fill*         0x00000000c0003121        0x3 
- .rodata        0x00000000c0003124       0x34 CMakeFiles/kernel.dir/main.c.o
- .rodata        0x00000000c0003158       0x13 ../../build_lib/libtimer.a(timer.c.o)
- *fill*         0x00000000c000316b        0x1 
- .rodata        0x00000000c000316c       0xe4 ../../build_lib/liblibrary.a(memory.c.o)
- .rodata        0x00000000c0003250       0xe4 ../../build_lib/liblibrary.a(string.c.o)
- .rodata        0x00000000c0003334       0x7f ../../build_lib/liblibrary.a(bitmap.c.o)
+ .rodata        0x00000000c00038b4       0x7c CMakeFiles/kernel.dir/debug.c.o
+ .rodata        0x00000000c0003930      0x276 CMakeFiles/kernel.dir/interrupt.c.o
+ .rodata        0x00000000c0003ba6       0x4a CMakeFiles/kernel.dir/main.c.o
+ .rodata        0x00000000c0003bf0       0xa0 CMakeFiles/kernel.dir/print.c.o
+ .rodata        0x00000000c0003c90      0x205 CMakeFiles/kernel.dir/thread.c.o
+ *fill*         0x00000000c0003e95        0x3 
+ .rodata        0x00000000c0003e98       0x83 ../../build_lib/libtimer.a(timer.c.o)
+ *fill*         0x00000000c0003f1b        0x1 
+ .rodata        0x00000000c0003f1c       0xb8 ../../build_lib/liblibrary.a(memory.c.o)
+ .rodata        0x00000000c0003fd4       0xec ../../build_lib/liblibrary.a(string.c.o)
+ .rodata        0x00000000c00040c0       0x6f ../../build_lib/liblibrary.a(bitmap.c.o)
 
 .rodata1
  *(.rodata1)
@@ -239,23 +307,29 @@ LOAD ../../build_lib/liblibrary.a
  *(.eh_frame_hdr)
  *(.eh_frame_entry .eh_frame_entry.*)
 
-.eh_frame       0x00000000c00033b4      0x5cc
+.eh_frame       0x00000000c0004130      0x908
  *(.eh_frame)
- .eh_frame      0x00000000c00033b4       0x48 CMakeFiles/kernel.dir/debug.c.o
- .eh_frame      0x00000000c00033fc       0x24 CMakeFiles/kernel.dir/init.c.o
+ .eh_frame      0x00000000c0004130       0x48 CMakeFiles/kernel.dir/debug.c.o
+ .eh_frame      0x00000000c0004178       0x24 CMakeFiles/kernel.dir/init.c.o
                                          0x50 (松开之前的大小)
- .eh_frame      0x00000000c0003420      0x194 CMakeFiles/kernel.dir/interrupt.c.o
-                                        0x1c0 (松开之前的大小)
- .eh_frame      0x00000000c00035b4       0x28 CMakeFiles/kernel.dir/main.c.o
-                                         0x54 (松开之前的大小)
- .eh_frame      0x00000000c00035dc       0x6c ../../build_lib/libtimer.a(timer.c.o)
-                                         0x98 (松开之前的大小)
- .eh_frame      0x00000000c0003648      0x13c ../../build_lib/liblibrary.a(memory.c.o)
-                                        0x17c (松开之前的大小)
- .eh_frame      0x00000000c0003784      0x168 ../../build_lib/liblibrary.a(string.c.o)
+ .eh_frame      0x00000000c000419c      0x1c4 CMakeFiles/kernel.dir/interrupt.c.o
+                                        0x1f0 (松开之前的大小)
+ .eh_frame      0x00000000c0004360      0x148 CMakeFiles/kernel.dir/list.c.o
+                                        0x188 (松开之前的大小)
+ .eh_frame      0x00000000c00044a8       0x84 CMakeFiles/kernel.dir/main.c.o
+                                         0xb0 (松开之前的大小)
+ .eh_frame      0x00000000c000452c       0x24 CMakeFiles/kernel.dir/print.c.o
+                                         0x50 (松开之前的大小)
+ .eh_frame      0x00000000c0004550      0x128 CMakeFiles/kernel.dir/thread.c.o
+                                        0x168 (松开之前的大小)
+ .eh_frame      0x00000000c0004678       0x90 ../../build_lib/libtimer.a(timer.c.o)
+                                         0xd0 (松开之前的大小)
+ .eh_frame      0x00000000c0004708      0x138 ../../build_lib/liblibrary.a(memory.c.o)
+                                        0x178 (松开之前的大小)
+ .eh_frame      0x00000000c0004840      0x168 ../../build_lib/liblibrary.a(string.c.o)
                                         0x194 (松开之前的大小)
- .eh_frame      0x00000000c00038ec       0x94 ../../build_lib/liblibrary.a(bitmap.c.o)
-                                         0xc0 (松开之前的大小)
+ .eh_frame      0x00000000c00049a8       0x90 ../../build_lib/liblibrary.a(bitmap.c.o)
+                                         0xbc (松开之前的大小)
  *(.eh_frame.*)
 
 .gcc_except_table
@@ -266,7 +340,7 @@ LOAD ../../build_lib/liblibrary.a
 
 .exception_ranges
  *(.exception_ranges .exception_ranges*)
-                0x00000000c0005000                . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
+                0x00000000c0006000                . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
 
 .eh_frame
  *(.eh_frame)
@@ -288,18 +362,18 @@ LOAD ../../build_lib/liblibrary.a
  *(.tbss .tbss.* .gnu.linkonce.tb.*)
  *(.tcommon)
 
-.preinit_array  0x00000000c0005000        0x0
+.preinit_array  0x00000000c0006000        0x0
                 [!provide]                        PROVIDE (__preinit_array_start, .)
  *(.preinit_array)
                 [!provide]                        PROVIDE (__preinit_array_end, .)
 
-.init_array     0x00000000c0005000        0x0
+.init_array     0x00000000c0006000        0x0
                 [!provide]                        PROVIDE (__init_array_start, .)
  *(SORT(.init_array.*) SORT(.ctors.*))
  *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
                 [!provide]                        PROVIDE (__init_array_end, .)
 
-.fini_array     0x00000000c0005000        0x0
+.fini_array     0x00000000c0006000        0x0
                 [!provide]                        PROVIDE (__fini_array_start, .)
  *(SORT(.fini_array.*) SORT(.dtors.*))
  *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
@@ -329,70 +403,82 @@ LOAD ../../build_lib/liblibrary.a
 .dynamic
  *(.dynamic)
 
-.got            0x00000000c0005000        0x0
+.got            0x00000000c0006000        0x0
  *(.got)
- .got           0x00000000c0005000        0x0 CMakeFiles/kernel.dir/debug.c.o
+ .got           0x00000000c0006000        0x0 CMakeFiles/kernel.dir/debug.c.o
  *(.igot)
-                0x00000000c0005ff4                . = DATA_SEGMENT_RELRO_END (., (SIZEOF (.got.plt) >= 0xc)?0xc:0x0)
+                0x00000000c0006ff4                . = DATA_SEGMENT_RELRO_END (., (SIZEOF (.got.plt) >= 0xc)?0xc:0x0)
 
-.got.plt        0x00000000c0005000        0xc
+.got.plt        0x00000000c0006000        0xc
  *(.got.plt)
- .got.plt       0x00000000c0005000        0xc CMakeFiles/kernel.dir/debug.c.o
-                0x00000000c0005000                _GLOBAL_OFFSET_TABLE_
+ .got.plt       0x00000000c0006000        0xc CMakeFiles/kernel.dir/debug.c.o
+                0x00000000c0006000                _GLOBAL_OFFSET_TABLE_
  *(.igot.plt)
- .igot.plt      0x00000000c000500c        0x0 CMakeFiles/kernel.dir/debug.c.o
+ .igot.plt      0x00000000c000600c        0x0 CMakeFiles/kernel.dir/debug.c.o
 
-.data           0x00000000c000500c       0xa0
+.data           0x00000000c000600c       0xa0
  *(.data .data.* .gnu.linkonce.d.*)
- .data          0x00000000c000500c        0x0 CMakeFiles/kernel.dir/debug.c.o
- .data          0x00000000c000500c        0x0 CMakeFiles/kernel.dir/init.c.o
- .data          0x00000000c000500c        0x0 CMakeFiles/kernel.dir/interrupt.c.o
- .data          0x00000000c000500c        0x0 CMakeFiles/kernel.dir/io.c.o
- .data          0x00000000c000500c        0x0 CMakeFiles/kernel.dir/main.c.o
- .data          0x00000000c000500c       0x96 CMakeFiles/kernel.dir/vector.S.o
-                0x00000000c000501e                intr_entry_table
- *fill*         0x00000000c00050a2        0x2 
- .data          0x00000000c00050a4        0x8 ../../build_lib/libio.a(print.S.o)
- .data          0x00000000c00050ac        0x0 ../../build_lib/libtimer.a(timer.c.o)
- .data          0x00000000c00050ac        0x0 ../../build_lib/liblibrary.a(memory.c.o)
- .data          0x00000000c00050ac        0x0 ../../build_lib/liblibrary.a(string.c.o)
- .data          0x00000000c00050ac        0x0 ../../build_lib/liblibrary.a(bitmap.c.o)
+ .data          0x00000000c000600c        0x0 CMakeFiles/kernel.dir/debug.c.o
+ .data          0x00000000c000600c        0x0 CMakeFiles/kernel.dir/init.c.o
+ .data          0x00000000c000600c        0x0 CMakeFiles/kernel.dir/interrupt.c.o
+ .data          0x00000000c000600c        0x0 CMakeFiles/kernel.dir/io.c.o
+ .data          0x00000000c000600c        0x0 CMakeFiles/kernel.dir/list.c.o
+ .data          0x00000000c000600c        0x0 CMakeFiles/kernel.dir/main.c.o
+ .data          0x00000000c000600c        0x0 CMakeFiles/kernel.dir/print.c.o
+ .data          0x00000000c000600c        0x0 CMakeFiles/kernel.dir/thread.c.o
+ .data          0x00000000c000600c       0x95 CMakeFiles/kernel.dir/vector.S.o
+                0x00000000c000601d                intr_entry_table
+ *fill*         0x00000000c00060a1        0x3 
+ .data          0x00000000c00060a4        0x8 ../../build_lib/libio.a(print.S.o)
+ .data          0x00000000c00060ac        0x0 ../../build_lib/libtimer.a(timer.c.o)
+ .data          0x00000000c00060ac        0x0 ../../build_lib/liblibrary.a(memory.c.o)
+ .data          0x00000000c00060ac        0x0 ../../build_lib/liblibrary.a(string.c.o)
+ .data          0x00000000c00060ac        0x0 ../../build_lib/liblibrary.a(bitmap.c.o)
 
 .data1
  *(.data1)
-                0x00000000c00050ac                _edata = .
+                0x00000000c00060ac                _edata = .
                 [!provide]                        PROVIDE (edata, .)
-                0x00000000c00050ac                . = .
-                0x00000000c00050ac                __bss_start = .
+                0x00000000c00060ac                . = .
+                0x00000000c00060ac                __bss_start = .
 
-.bss            0x00000000c00050c0      0x270
+.bss            0x00000000c00060c0      0x298
  *(.dynbss)
  *(.bss .bss.* .gnu.linkonce.b.*)
- .bss           0x00000000c00050c0        0x0 CMakeFiles/kernel.dir/debug.c.o
- .bss           0x00000000c00050c0        0x0 CMakeFiles/kernel.dir/init.c.o
- .bss           0x00000000c00050c0      0x108 CMakeFiles/kernel.dir/interrupt.c.o
- .bss           0x00000000c00051c8        0x0 CMakeFiles/kernel.dir/io.c.o
- .bss           0x00000000c00051c8        0x0 CMakeFiles/kernel.dir/main.c.o
- .bss           0x00000000c00051c8        0x0 ../../build_lib/libtimer.a(timer.c.o)
- .bss           0x00000000c00051c8        0x0 ../../build_lib/liblibrary.a(memory.c.o)
- .bss           0x00000000c00051c8        0x0 ../../build_lib/liblibrary.a(string.c.o)
- .bss           0x00000000c00051c8        0x0 ../../build_lib/liblibrary.a(bitmap.c.o)
+ .bss           0x00000000c00060c0        0x0 CMakeFiles/kernel.dir/debug.c.o
+ .bss           0x00000000c00060c0        0x0 CMakeFiles/kernel.dir/init.c.o
+ .bss           0x00000000c00060c0      0x108 CMakeFiles/kernel.dir/interrupt.c.o
+ .bss           0x00000000c00061c8        0x0 CMakeFiles/kernel.dir/io.c.o
+ .bss           0x00000000c00061c8        0x0 CMakeFiles/kernel.dir/list.c.o
+ .bss           0x00000000c00061c8        0x0 CMakeFiles/kernel.dir/main.c.o
+ .bss           0x00000000c00061c8        0x0 CMakeFiles/kernel.dir/print.c.o
+ .bss           0x00000000c00061c8        0x8 CMakeFiles/kernel.dir/thread.c.o
+ .bss           0x00000000c00061d0        0x0 ../../build_lib/libtimer.a(timer.c.o)
+ .bss           0x00000000c00061d0        0x0 ../../build_lib/liblibrary.a(memory.c.o)
+ .bss           0x00000000c00061d0        0x0 ../../build_lib/liblibrary.a(string.c.o)
+ .bss           0x00000000c00061d0        0x0 ../../build_lib/liblibrary.a(bitmap.c.o)
  *(COMMON)
- *fill*         0x00000000c00051c8       0x18 
- COMMON         0x00000000c00051e0      0x124 CMakeFiles/kernel.dir/debug.c.o
-                0x00000000c00051e0                interruptFunction_table
-                0x00000000c0005280                intr_name
- COMMON         0x00000000c0005304       0x2c ../../build_lib/liblibrary.a(memory.c.o)
-                0x00000000c0005304                user_pool
-                0x00000000c0005314                kernel_vaddr
-                0x00000000c0005320                kernel_pool
-                0x00000000c0005330                . = ALIGN ((. != 0x0)?0x4:0x1)
-                0x00000000c0005330                . = ALIGN (0x4)
-                0x00000000c0005330                . = SEGMENT_START ("ldata-segment", .)
-                0x00000000c0005330                . = ALIGN (0x4)
-                0x00000000c0005330                _end = .
+ *fill*         0x00000000c00061d0       0x10 
+ COMMON         0x00000000c00061e0      0x124 CMakeFiles/kernel.dir/debug.c.o
+                0x00000000c00061e0                interruptFunction_table
+                0x00000000c0006280                intr_name
+ COMMON         0x00000000c0006304       0x24 CMakeFiles/kernel.dir/thread.c.o
+                0x00000000c0006304                thread_ready_list
+                0x00000000c0006314                thread_all_list
+                0x00000000c0006324                main_thread
+ COMMON         0x00000000c0006328        0x4 ../../build_lib/libtimer.a(timer.c.o)
+                0x00000000c0006328                ticks
+ COMMON         0x00000000c000632c       0x2c ../../build_lib/liblibrary.a(memory.c.o)
+                0x00000000c000632c                user_pool
+                0x00000000c000633c                kernel_vaddr
+                0x00000000c0006348                kernel_pool
+                0x00000000c0006358                . = ALIGN ((. != 0x0)?0x4:0x1)
+                0x00000000c0006358                . = ALIGN (0x4)
+                0x00000000c0006358                . = SEGMENT_START ("ldata-segment", .)
+                0x00000000c0006358                . = ALIGN (0x4)
+                0x00000000c0006358                _end = .
                 [!provide]                        PROVIDE (end, .)
-                0x00000000c0005330                . = DATA_SEGMENT_END (.)
+                0x00000000c0006358                . = DATA_SEGMENT_END (.)
 
 .stab
  *(.stab)
@@ -419,7 +505,10 @@ LOAD ../../build_lib/liblibrary.a
  .comment       0x0000000000000025       0x26 CMakeFiles/kernel.dir/init.c.o
  .comment       0x0000000000000025       0x26 CMakeFiles/kernel.dir/interrupt.c.o
  .comment       0x0000000000000025       0x26 CMakeFiles/kernel.dir/io.c.o
+ .comment       0x0000000000000025       0x26 CMakeFiles/kernel.dir/list.c.o
  .comment       0x0000000000000025       0x26 CMakeFiles/kernel.dir/main.c.o
+ .comment       0x0000000000000025       0x26 CMakeFiles/kernel.dir/print.c.o
+ .comment       0x0000000000000025       0x26 CMakeFiles/kernel.dir/thread.c.o
  .comment       0x0000000000000025       0x26 ../../build_lib/libtimer.a(timer.c.o)
  .comment       0x0000000000000025       0x26 ../../build_lib/liblibrary.a(memory.c.o)
  .comment       0x0000000000000025       0x26 ../../build_lib/liblibrary.a(string.c.o)
@@ -437,7 +526,7 @@ LOAD ../../build_lib/liblibrary.a
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x0000000000000000      0x118
+.debug_aranges  0x0000000000000000      0x178
  *(.debug_aranges)
  .debug_aranges
                 0x0000000000000000       0x20 CMakeFiles/kernel.dir/debug.c.o
@@ -448,78 +537,99 @@ LOAD ../../build_lib/liblibrary.a
  .debug_aranges
                 0x0000000000000060       0x18 CMakeFiles/kernel.dir/io.c.o
  .debug_aranges
-                0x0000000000000078       0x20 CMakeFiles/kernel.dir/main.c.o
+                0x0000000000000078       0x20 CMakeFiles/kernel.dir/list.c.o
  .debug_aranges
-                0x0000000000000098       0x20 ../../build_lib/libtimer.a(timer.c.o)
+                0x0000000000000098       0x20 CMakeFiles/kernel.dir/main.c.o
  .debug_aranges
-                0x00000000000000b8       0x20 ../../build_lib/liblibrary.a(memory.c.o)
+                0x00000000000000b8       0x20 CMakeFiles/kernel.dir/print.c.o
  .debug_aranges
-                0x00000000000000d8       0x20 ../../build_lib/liblibrary.a(string.c.o)
+                0x00000000000000d8       0x20 CMakeFiles/kernel.dir/thread.c.o
  .debug_aranges
-                0x00000000000000f8       0x20 ../../build_lib/liblibrary.a(bitmap.c.o)
+                0x00000000000000f8       0x20 ../../build_lib/libtimer.a(timer.c.o)
+ .debug_aranges
+                0x0000000000000118       0x20 ../../build_lib/liblibrary.a(memory.c.o)
+ .debug_aranges
+                0x0000000000000138       0x20 ../../build_lib/liblibrary.a(string.c.o)
+ .debug_aranges
+                0x0000000000000158       0x20 ../../build_lib/liblibrary.a(bitmap.c.o)
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x1490
+.debug_info     0x0000000000000000     0x22ab
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x121 CMakeFiles/kernel.dir/debug.c.o
  .debug_info    0x0000000000000121      0x104 CMakeFiles/kernel.dir/init.c.o
- .debug_info    0x0000000000000225      0x340 CMakeFiles/kernel.dir/interrupt.c.o
- .debug_info    0x0000000000000565       0x52 CMakeFiles/kernel.dir/io.c.o
- .debug_info    0x00000000000005b7      0x122 CMakeFiles/kernel.dir/main.c.o
- .debug_info    0x00000000000006d9      0x10b ../../build_lib/libtimer.a(timer.c.o)
- .debug_info    0x00000000000007e4      0x55e ../../build_lib/liblibrary.a(memory.c.o)
- .debug_info    0x0000000000000d42      0x48f ../../build_lib/liblibrary.a(string.c.o)
- .debug_info    0x00000000000011d1      0x2bf ../../build_lib/liblibrary.a(bitmap.c.o)
+ .debug_info    0x0000000000000225      0x3b2 CMakeFiles/kernel.dir/interrupt.c.o
+ .debug_info    0x00000000000005d7       0x52 CMakeFiles/kernel.dir/io.c.o
+ .debug_info    0x0000000000000629      0x3d5 CMakeFiles/kernel.dir/list.c.o
+ .debug_info    0x00000000000009fe      0x21f CMakeFiles/kernel.dir/main.c.o
+ .debug_info    0x0000000000000c1d      0x139 CMakeFiles/kernel.dir/print.c.o
+ .debug_info    0x0000000000000d56      0x579 CMakeFiles/kernel.dir/thread.c.o
+ .debug_info    0x00000000000012cf      0x330 ../../build_lib/libtimer.a(timer.c.o)
+ .debug_info    0x00000000000015ff      0x55e ../../build_lib/liblibrary.a(memory.c.o)
+ .debug_info    0x0000000000001b5d      0x48f ../../build_lib/liblibrary.a(string.c.o)
+ .debug_info    0x0000000000001fec      0x2bf ../../build_lib/liblibrary.a(bitmap.c.o)
 
-.debug_abbrev   0x0000000000000000      0x8c7
+.debug_abbrev   0x0000000000000000      0xe9e
  *(.debug_abbrev)
  .debug_abbrev  0x0000000000000000       0xa9 CMakeFiles/kernel.dir/debug.c.o
  .debug_abbrev  0x00000000000000a9       0x9a CMakeFiles/kernel.dir/init.c.o
- .debug_abbrev  0x0000000000000143      0x1d5 CMakeFiles/kernel.dir/interrupt.c.o
- .debug_abbrev  0x0000000000000318       0x24 CMakeFiles/kernel.dir/io.c.o
- .debug_abbrev  0x000000000000033c       0xab CMakeFiles/kernel.dir/main.c.o
- .debug_abbrev  0x00000000000003e7       0x97 ../../build_lib/libtimer.a(timer.c.o)
- .debug_abbrev  0x000000000000047e      0x1eb ../../build_lib/liblibrary.a(memory.c.o)
- .debug_abbrev  0x0000000000000669      0x11c ../../build_lib/liblibrary.a(string.c.o)
- .debug_abbrev  0x0000000000000785      0x142 ../../build_lib/liblibrary.a(bitmap.c.o)
+ .debug_abbrev  0x0000000000000143      0x1fa CMakeFiles/kernel.dir/interrupt.c.o
+ .debug_abbrev  0x000000000000033d       0x24 CMakeFiles/kernel.dir/io.c.o
+ .debug_abbrev  0x0000000000000361      0x185 CMakeFiles/kernel.dir/list.c.o
+ .debug_abbrev  0x00000000000004e6      0x149 CMakeFiles/kernel.dir/main.c.o
+ .debug_abbrev  0x000000000000062f       0xb6 CMakeFiles/kernel.dir/print.c.o
+ .debug_abbrev  0x00000000000006e5      0x1ff CMakeFiles/kernel.dir/thread.c.o
+ .debug_abbrev  0x00000000000008e4      0x159 ../../build_lib/libtimer.a(timer.c.o)
+ .debug_abbrev  0x0000000000000a3d      0x1eb ../../build_lib/liblibrary.a(memory.c.o)
+ .debug_abbrev  0x0000000000000c28      0x11c ../../build_lib/liblibrary.a(string.c.o)
+ .debug_abbrev  0x0000000000000d44      0x15a ../../build_lib/liblibrary.a(bitmap.c.o)
 
-.debug_line     0x0000000000000000      0x9ac
+.debug_line     0x0000000000000000      0xfd5
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x0000000000000000       0x90 CMakeFiles/kernel.dir/debug.c.o
- .debug_line    0x0000000000000090       0xcb CMakeFiles/kernel.dir/init.c.o
- .debug_line    0x000000000000015b      0x14f CMakeFiles/kernel.dir/interrupt.c.o
- .debug_line    0x00000000000002aa       0x1d CMakeFiles/kernel.dir/io.c.o
- .debug_line    0x00000000000002c7       0xed CMakeFiles/kernel.dir/main.c.o
- .debug_line    0x00000000000003b4       0xec ../../build_lib/libtimer.a(timer.c.o)
- .debug_line    0x00000000000004a0      0x1cd ../../build_lib/liblibrary.a(memory.c.o)
- .debug_line    0x000000000000066d      0x1fa ../../build_lib/liblibrary.a(string.c.o)
- .debug_line    0x0000000000000867      0x145 ../../build_lib/liblibrary.a(bitmap.c.o)
+ .debug_line    0x0000000000000000       0x9a CMakeFiles/kernel.dir/debug.c.o
+ .debug_line    0x000000000000009a       0xdd CMakeFiles/kernel.dir/init.c.o
+ .debug_line    0x0000000000000177      0x1af CMakeFiles/kernel.dir/interrupt.c.o
+ .debug_line    0x0000000000000326       0x1d CMakeFiles/kernel.dir/io.c.o
+ .debug_line    0x0000000000000343      0x129 CMakeFiles/kernel.dir/list.c.o
+ .debug_line    0x000000000000046c      0x124 CMakeFiles/kernel.dir/main.c.o
+ .debug_line    0x0000000000000590       0xf4 CMakeFiles/kernel.dir/print.c.o
+ .debug_line    0x0000000000000684      0x205 CMakeFiles/kernel.dir/thread.c.o
+ .debug_line    0x0000000000000889      0x16e ../../build_lib/libtimer.a(timer.c.o)
+ .debug_line    0x00000000000009f7      0x211 ../../build_lib/liblibrary.a(memory.c.o)
+ .debug_line    0x0000000000000c08      0x246 ../../build_lib/liblibrary.a(string.c.o)
+ .debug_line    0x0000000000000e4e      0x187 ../../build_lib/liblibrary.a(bitmap.c.o)
 
 .debug_frame
  *(.debug_frame)
 
-.debug_str      0x0000000000000000      0x795
+.debug_str      0x0000000000000000      0xbb2
  *(.debug_str)
- .debug_str     0x0000000000000000      0x139 CMakeFiles/kernel.dir/debug.c.o
-                                        0x164 (松开之前的大小)
- .debug_str     0x0000000000000139       0x73 CMakeFiles/kernel.dir/init.c.o
-                                        0x179 (松开之前的大小)
- .debug_str     0x00000000000001ac      0x19e CMakeFiles/kernel.dir/interrupt.c.o
-                                        0x2ab (松开之前的大小)
- .debug_str     0x000000000000034a       0x38 CMakeFiles/kernel.dir/io.c.o
-                                         0xeb (松开之前的大小)
- .debug_str     0x0000000000000382       0x3f CMakeFiles/kernel.dir/main.c.o
-                                        0x183 (松开之前的大小)
- .debug_str     0x00000000000003c1       0x87 ../../build_lib/libtimer.a(timer.c.o)
-                                        0x15a (松开之前的大小)
- .debug_str     0x0000000000000448      0x1f6 ../../build_lib/liblibrary.a(memory.c.o)
-                                        0x37f (松开之前的大小)
- .debug_str     0x000000000000063e       0xa5 ../../build_lib/liblibrary.a(string.c.o)
-                                        0x1d2 (松开之前的大小)
- .debug_str     0x00000000000006e3       0xb2 ../../build_lib/liblibrary.a(bitmap.c.o)
-                                        0x213 (松开之前的大小)
+ .debug_str     0x0000000000000000      0x141 CMakeFiles/kernel.dir/debug.c.o
+                                        0x171 (松开之前的大小)
+ .debug_str     0x0000000000000141       0x7d CMakeFiles/kernel.dir/init.c.o
+                                        0x186 (松开之前的大小)
+ .debug_str     0x00000000000001be      0x1c6 CMakeFiles/kernel.dir/interrupt.c.o
+                                        0x2e2 (松开之前的大小)
+ .debug_str     0x0000000000000384       0x42 CMakeFiles/kernel.dir/io.c.o
+                                         0xf8 (松开之前的大小)
+ .debug_str     0x00000000000003c6       0xf6 CMakeFiles/kernel.dir/list.c.o
+                                        0x24a (松开之前的大小)
+ .debug_str     0x00000000000004bc       0x8f CMakeFiles/kernel.dir/main.c.o
+                                        0x208 (松开之前的大小)
+ .debug_str     0x000000000000054b       0x5d CMakeFiles/kernel.dir/print.c.o
+                                        0x177 (松开之前的大小)
+ .debug_str     0x00000000000005a8      0x1b2 CMakeFiles/kernel.dir/thread.c.o
+                                        0x3a2 (松开之前的大小)
+ .debug_str     0x000000000000075a       0xf6 ../../build_lib/libtimer.a(timer.c.o)
+                                        0x2e4 (松开之前的大小)
+ .debug_str     0x0000000000000850      0x1f7 ../../build_lib/liblibrary.a(memory.c.o)
+                                        0x389 (松开之前的大小)
+ .debug_str     0x0000000000000a47       0xaf ../../build_lib/liblibrary.a(string.c.o)
+                                        0x1dc (松开之前的大小)
+ .debug_str     0x0000000000000af6       0xbc ../../build_lib/liblibrary.a(bitmap.c.o)
+                                        0x22d (松开之前的大小)
 
 .debug_loc
  *(.debug_loc)

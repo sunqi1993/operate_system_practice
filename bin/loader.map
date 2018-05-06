@@ -1,7 +1,7 @@
-     1                                 %line 1+1 /home/sunqi/Desktop/operate_system_practice/boot/loader.S
+     1                                 %line 2+1 /media/sunqi/0DDA09640DDA0964/operate_system_practice/boot/loader.S
      2                                 
      3                                 
-     4                                 %line 1+1 /home/sunqi/Desktop/operate_system_practice/boot/include/boot.inc
+     4                                 %line 2+1 /media/sunqi/0DDA09640DDA0964/operate_system_practice/boot/include/boot.inc
      5                                 
      6                                 
      7                                 LOADER_BASE_ADDR equ 0x900
@@ -58,7 +58,7 @@
     58                                 
     59                                 PT_NULL equ 0
     60                                 
-    61                                 %line 4+1 /home/sunqi/Desktop/operate_system_practice/boot/loader.S
+    61                                 %line 5+1 /media/sunqi/0DDA09640DDA0964/operate_system_practice/boot/loader.S
     62                                 [section loader vstart=LOADER_BASE_ADDR]
     63                                 
     64 00000000 00000000                GDT_BASE: dd 0x00000000
@@ -234,7 +234,7 @@
    234                                 
    235                                 
    236 00000423 0F20C0                  mov eax, cr0
-   237 00000426 0D00000080              or eax, 0x80000000
+   237 00000426 0D00000080              or eax, 0x1<<31
    238 0000042B 0F22C0                  mov cr0, eax
    239                                 
    240                                 
