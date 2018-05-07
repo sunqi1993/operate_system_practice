@@ -9,10 +9,10 @@
 #include "thread.h"
 #include "debug.h"
 #include "interrupt.h"
-#define IRQ0_FRQ 20
+#define IRQ0_FRQ 100
 #define INPUT_FRQ 1193180
 
-#define COUTER0_VALUE (INPUT_FRQ/IRQ0_FRQ)
+#define COUTER0_VALUE ((uint32_t)INPUT_FRQ/IRQ0_FRQ)
 #define COUNTER0_PORT 0X40
 #define COUNTER0_NO 0
 #define COUNTER_MODE 2
@@ -27,7 +27,7 @@
  * counter_mode :计数器的运行模式
  * counter_value :计数器的写入的初始数值
  * */
-static  void freq_set(uint8_t counter_port,uint8_t counter_no,uint8_t rwl,uint8_t  counter_mode,uint8_t counter_value)
+static  void freq_set(uint8_t counter_port,uint8_t counter_no,uint8_t rwl,uint8_t  counter_mode,uint16_t counter_value)
 {
     /*往控制寄存器的端口写入控制字段*/
     outb(PIT_CONTROL_PORT,(uint8_t)(counter_no<<6|rwl<<4|counter_mode<<1));

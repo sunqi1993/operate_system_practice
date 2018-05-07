@@ -1,444 +1,182 @@
-     1                                 %line 2+1 /media/sunqi/0DDA09640DDA0964/operate_system_practice/boot/loader.S
+     1                                 %line 2+1 /home/sunqi/Desktop/study/operate_system_practice/boot/include/boot.inc
      2                                 
      3                                 
-     4                                 %line 2+1 /media/sunqi/0DDA09640DDA0964/operate_system_practice/boot/include/boot.inc
-     5                                 
-     6                                 
-     7                                 LOADER_BASE_ADDR equ 0x900
-     8                                 LOADER_STACK_TOP equ LOADER_BASE_ADDR
-     9                                 LOADER_START_SECTOR equ 0x2
+     4                                 LOADER_BASE_ADDR equ 0x900
+     5                                 LOADER_STACK_TOP equ LOADER_BASE_ADDR
+     6                                 LOADER_START_SECTOR equ 0x2
+     7                                 
+     8                                 KERNEL_BIN_BASE_ADDR equ 0x70000
+     9                                 KERNEL_START_SECTOR equ 0x9
     10                                 
-    11                                 KERNEL_BIN_BASE_ADDR equ 0x70000
-    12                                 KERNEL_START_SECTOR equ 0x9
-    13                                 
+    11                                 
+    12                                 
+    13                                 PAGE_DIR_TABLE_POS equ 0x100000
     14                                 
     15                                 
-    16                                 PAGE_DIR_TABLE_POS equ 0x100000
-    17                                 
-    18                                 
-    19                                 DESC_G_4K equ 1_00000000000000000000000
-    20                                 DESC_D_32 equ 1_0000000000000000000000
-    21                                 DESC_L equ 0_000000000000000000000
-    22                                 DESC_AVL equ 0_00000000000000000000
-    23                                 DESC_LIMIT_CODE2 equ 1111_0000000000000000
-    24                                 DESC_LIMIT_DATA2 equ DESC_LIMIT_CODE2
-    25                                 DESC_LIMIT_VIDEO2 equ 0000_000000000000000
-    26                                 DESC_P equ 1_000000000000000
-    27                                 DESC_DPL_0 equ 00_0000000000000
-    28                                 DESC_DPL_1 equ 01_0000000000000
-    29                                 DESC_DPL_2 equ 10_0000000000000
-    30                                 DESC_DPL_3 equ 11_0000000000000
-    31                                 DESC_S_CODE equ 1_000000000000
-    32                                 DESC_S_DATA equ DESC_S_CODE
-    33                                 DESC_S_sys equ 0_000000000000
-    34                                 DESC_TYPE_CODE equ 1000_00000000
-    35                                 DESC_TYPE_DATA equ 0010_00000000
-    36                                 
-    37                                 DESC_CODE_HIGH4 equ (0x00 << 24) + DESC_G_4K + DESC_D_32 + DESC_L + DESC_AVL + DESC_LIMIT_CODE2 + DESC_P + DESC_DPL_0 + DESC_S_CODE + DESC_TYPE_CODE + 0x00
-    38                                 DESC_DATA_HIGH4 equ (0x00 << 24) + DESC_G_4K + DESC_D_32 + DESC_L + DESC_AVL + DESC_LIMIT_DATA2 + DESC_P + DESC_DPL_0 + DESC_S_DATA + DESC_TYPE_DATA + 0x00
-    39                                 DESC_VIDEO_HIGH4 equ (0x00 << 24) + DESC_G_4K + DESC_D_32 + DESC_L + DESC_AVL + DESC_LIMIT_VIDEO2 + DESC_P + DESC_DPL_0 + DESC_S_DATA + DESC_TYPE_DATA + 0x0b
-    40                                 
-    41                                 
-    42                                 RPL0 equ 00
-    43                                 RPL1 equ 01
-    44                                 RPL2 equ 10
-    45                                 RPL3 equ 11
-    46                                 TI_GDT equ 000
-    47                                 TI_LDT equ 100
-    48                                 
-    49                                 
-    50                                 
-    51                                 PG_P equ 1
-    52                                 PG_RW_R equ 00
-    53                                 PG_RW_W equ 10
-    54                                 PG_US_S equ 000
-    55                                 PG_US_U equ 100
-    56                                 
+    16                                 DESC_G_4K equ 1_00000000000000000000000
+    17                                 DESC_D_32 equ 1_0000000000000000000000
+    18                                 DESC_L equ 0_000000000000000000000
+    19                                 DESC_AVL equ 0_00000000000000000000
+    20                                 DESC_LIMIT_CODE2 equ 1111_0000000000000000
+    21                                 DESC_LIMIT_DATA2 equ DESC_LIMIT_CODE2
+    22                                 DESC_LIMIT_VIDEO2 equ 0000_000000000000000
+    23                                 DESC_P equ 1_000000000000000
+    24                                 DESC_DPL_0 equ 00_0000000000000
+    25                                 DESC_DPL_1 equ 01_0000000000000
+    26                                 DESC_DPL_2 equ 10_0000000000000
+    27                                 DESC_DPL_3 equ 11_0000000000000
+    28                                 DESC_S_CODE equ 1_000000000000
+    29                                 DESC_S_DATA equ DESC_S_CODE
+    30                                 DESC_S_sys equ 0_000000000000
+    31                                 DESC_TYPE_CODE equ 1000_00000000
+    32                                 DESC_TYPE_DATA equ 0010_00000000
+    33                                 
+    34                                 DESC_CODE_HIGH4 equ (0x00 << 24) + DESC_G_4K + DESC_D_32 + DESC_L + DESC_AVL + DESC_LIMIT_CODE2 + DESC_P + DESC_DPL_0 + DESC_S_CODE + DESC_TYPE_CODE + 0x00
+    35                                 DESC_DATA_HIGH4 equ (0x00 << 24) + DESC_G_4K + DESC_D_32 + DESC_L + DESC_AVL + DESC_LIMIT_DATA2 + DESC_P + DESC_DPL_0 + DESC_S_DATA + DESC_TYPE_DATA + 0x00
+    36                                 DESC_VIDEO_HIGH4 equ (0x00 << 24) + DESC_G_4K + DESC_D_32 + DESC_L + DESC_AVL + DESC_LIMIT_VIDEO2 + DESC_P + DESC_DPL_0 + DESC_S_DATA + DESC_TYPE_DATA + 0x0b
+    37                                 
+    38                                 
+    39                                 RPL0 equ 00
+    40                                 RPL1 equ 01
+    41                                 RPL2 equ 10
+    42                                 RPL3 equ 11
+    43                                 TI_GDT equ 000
+    44                                 TI_LDT equ 100
+    45                                 
+    46                                 
+    47                                 
+    48                                 PG_P equ 1
+    49                                 PG_RW_R equ 00
+    50                                 PG_RW_W equ 10
+    51                                 PG_US_S equ 000
+    52                                 PG_US_U equ 100
+    53                                 
+    54                                 
+    55                                 
+    56                                 PT_NULL equ 0
     57                                 
-    58                                 
-    59                                 PT_NULL equ 0
-    60                                 
-    61                                 %line 5+1 /media/sunqi/0DDA09640DDA0964/operate_system_practice/boot/loader.S
-    62                                 [section loader vstart=LOADER_BASE_ADDR]
-    63                                 
-    64 00000000 00000000                GDT_BASE: dd 0x00000000
-    65 00000004 00000000                dd 0x00000000
-    66                                 
-    67 00000008 FFFF0000                CODE_DESC: dd 0x0000FFFF
-    68 0000000C 0098CF00                dd DESC_CODE_HIGH4
+    58                                 %line 3+1 /home/sunqi/Desktop/study/operate_system_practice/boot/mbr.S
+    59                                 
+    60                                 [section MBR vstart=0x7c00]
+    61 00000000 8CC8                    mov ax,cs
+    62 00000002 8ED8                    mov ds,ax
+    63 00000004 8EC0                    mov es,ax
+    64 00000006 8ED0                    mov ss,ax
+    65 00000008 8EE0                    mov fs,ax
+    66 0000000A BC007C                  mov sp,0x7c00
+    67 0000000D B800B8                  mov ax,0xb800
+    68 00000010 8EE8                    mov gs,ax
     69                                 
-    70 00000010 FFFF0000                DATA_STACK_DESC: dd 0x0000FFFF
-    71 00000014 0092CF00                dd DESC_DATA_HIGH4
+    70                                 
+    71                                 
     72                                 
-    73 00000018 07000080                VIDEO_DESC: dd 0x80000007
-    74 0000001C 0B92C000                dd DESC_VIDEO_HIGH4
+    73                                 
+    74                                 
     75                                 
-    76                                  GDT_SIZE equ $ - GDT_BASE
-    77                                  GDT_LIMIT equ GDT_SIZE - 1
-    78 00000020 0000000000000000<rept>        times 60 dq 0
-    79                                  SELECTOR_CODE equ (0x0001<<3) + TI_GDT + RPL0
-    80                                  SELECTOR_DATA equ (0x0002<<3) + TI_GDT + RPL0
-    81                                  SELECTOR_VIDEO equ (0x0003<<3) + TI_GDT + RPL0
-    82                                 
-    83                                 
-    84                                 
-    85                                 
-    86 00000200 00000000                total_mem_bytes dd 0
+    76                                 
+    77                                 
+    78                                 
+    79                                 
+    80                                 
+    81                                 
+    82 00000012 B80006                  mov ax, 0600
+    83 00000015 BB0007                  mov bx, 0700
+    84 00000018 B90000                  mov cx, 0
+    85 0000001B BA4F18                  mov dx, 184f
+    86                                 
     87                                 
-    88                                 
+    88 0000001E CD10                    int 10
     89                                 
-    90 00000204 1F00                    gdt_ptr dw GDT_LIMIT
-    91 00000206 00090000                dd GDT_BASE
-    92                                 
+    90                                 
+    91 00000020 65C606000031            mov byte [gs:0x00],'1'
+    92 00000026 65C6060100A4            mov byte [gs:0x01],0xA4
     93                                 
-    94 0000020A 00<rept>                ards_buf times 244 db 0
-    95 000002FE 0000                    ards_nr dw 0
+    94 0000002C 65C606020020            mov byte [gs:0x02],' '
+    95 00000032 65C6060300A4            mov byte [gs:0x03],0xA4
     96                                 
-    97                                  loader_start:
-    98                                 
+    97 00000038 65C60604004D            mov byte [gs:0x04],'M'
+    98 0000003E 65C6060500A4            mov byte [gs:0x05],0xA4
     99                                 
-   100                                 
-   101 00000300 6631DB                  xor ebx, ebx
-   102 00000303 66BA50414D53            mov edx, 0x534d4150
-   103 00000309 BF0A0B                  mov di, ards_buf
-   104                                 .e820_mem_get_loop:
-   105 0000030C 66B820E80000            mov eax, 0x0000e820
-   106 00000312 66B914000000            mov ecx, 20
-   107 00000318 CD15                    int 0x15
-   108 0000031A 7230                    jc .e820_failed_so_try_e801
-   109 0000031C 01CF                    add di, cx
-   110 0000031E FF06FE0B                inc word [ards_nr]
-   111 00000322 6683FB00                cmp ebx, 0
-   112 00000326 75E2                    jnz .e820_mem_get_loop
+   100 00000044 65C606060042            mov byte [gs:0x06],'B'
+   101 0000004A 65C6060700A4            mov byte [gs:0x07],0xA4
+   102                                 
+   103 00000050 65C606080052            mov byte [gs:0x08],'R'
+   104 00000056 65C6060900A4            mov byte [gs:0x09],0xA4
+   105                                 
+   106 0000005C 66B802000000            mov eax,LOADER_START_SECTOR
+   107 00000062 BB0009                  mov bx,LOADER_BASE_ADDR
+   108 00000065 B90400                  mov cx,4
+   109 00000068 E80000                  call rd_disk_m_16
+   110                                 
+   111 0000006B E98F8F                  jmp LOADER_BASE_ADDR + 0x300
+   112                                 
    113                                 
    114                                 
-   115 00000328 8B0EFE0B                mov cx, [ards_nr]
-   116 0000032C 66BB0A0B0000            mov ebx, ards_buf
-   117 00000332 6631D2                  xor edx, edx
-   118                                 .find_max_mem_area:
-   119 00000335 67668B03                mov eax, [ebx]
-   120 00000339 6766034308              add eax, [ebx+8]
-   121 0000033E 6683C314                add ebx, 20
-   122 00000342 6639C2                  cmp edx, eax
-   123 00000345 7D01                    jge .next_ards
-   124 00000347 6689C2                  mov edx, eax
-   125                                 .next_ards:
-   126 0000034A E2E7                    loop .find_max_mem_area
-   127 0000034C EB56                    jmp .mem_get_ok
-   128                                 
+   115                                 rd_disk_m_16:
+   116                                 
+   117                                 
+   118                                 
+   119                                 
+   120 0000006E 6689C6                  mov esi,eax
+   121 00000071 89CF                    mov di,cx
+   122                                 
+   123                                 
+   124 00000073 BAF201                  mov dx,0x1f2
+   125 00000076 88C8                    mov al,cl
+   126 00000078 EE                      out dx,al
+   127                                 
+   128 00000079 6689F0                  mov eax,esi
    129                                 
    130                                 
    131                                 
-   132                                 .e820_failed_so_try_e801:
-   133 0000034E B801E8                  mov ax,0xe801
-   134 00000351 CD15                    int 0x15
-   135 00000353 7230                    jc .e801_failed_so_try88
+   132                                 
+   133 0000007C BAF301                  mov dx,0x1f3
+   134 0000007F EE                      out dx,al
+   135                                 
    136                                 
-   137                                 
-   138 00000355 B90004                  mov cx,0x400
-   139 00000358 F7E1                    mul cx
-   140 0000035A 66C1E210                shl edx,16
-   141 0000035E 6625FFFF0000            and eax,0x0000FFFF
-   142 00000364 6609C2                  or edx,eax
-   143 00000367 6681C200001000          add edx, 0x100000
-   144 0000036E 6689D6                  mov esi,edx
-   145                                 
+   137 00000080 B108                    mov cl,8
+   138 00000082 66D3E8                  shr eax,cl
+   139 00000085 BAF401                  mov dx,0x1f4
+   140 00000088 EE                      out dx,al
+   141                                 
+   142                                 
+   143 00000089 66D3E8                  shr eax,cl
+   144 0000008C BAF501                  mov dx,0x1f5
+   145 0000008F EE                      out dx,al
    146                                 
-   147 00000371 6631C0                  xor eax,eax
-   148 00000374 89D8                    mov ax,bx
-   149 00000376 66B900000100            mov ecx, 0x10000
-   150 0000037C 66F7E1                  mul ecx
-   151 0000037F 6601C6                  add esi,eax
-   152 00000382 6689F2                  mov edx,esi
-   153 00000385 EB1D                    jmp .mem_get_ok
-   154                                 
-   155                                 
-   156                                 .e801_failed_so_try88:
+   147 00000090 66D3E8                  shr eax,cl
+   148 00000093 240F                    and al,0x0f
+   149 00000095 0CE0                    or al,0xe0
+   150 00000097 BAF601                  mov dx,0x1f6
+   151 0000009A EE                      out dx,al
+   152                                 
+   153                                 
+   154 0000009B BAF701                  mov dx,0x1f7
+   155 0000009E B020                    mov al,0x20
+   156 000000A0 EE                      out dx,al
    157                                 
-   158 00000387 B488                    mov ah, 0x88
-   159 00000389 CD15                    int 0x15
-   160 0000038B 7239                    jc .error_hlt
-   161 0000038D 6625FFFF0000            and eax,0x0000FFFF
-   162                                 
-   163                                 
-   164 00000393 B90004                  mov cx, 0x400
-   165 00000396 F7E1                    mul cx
-   166 00000398 66C1E210                shl edx, 16
-   167 0000039C 6609C2                  or edx, eax
-   168 0000039F 6681C200001000          add edx,0x100000
-   169                                 
-   170                                 .mem_get_ok:
-   171 000003A6 668916000B              mov [total_mem_bytes], edx
+   158                                 
+   159                                  .not_ready:
+   160                                 
+   161 000000A1 90                      nop
+   162 000000A2 EC                      in al,dx
+   163 000000A3 2488                    and al,0x88
+   164 000000A5 3C08                    cmp al,0x08
+   165 000000A7 75F6                    jnz .not_ready
+   166                                 
+   167                                 
+   168 000000A9 89F8                    mov ax, di
+   169 000000AB BA0001                  mov dx, 256
+   170 000000AE F7E2                    mul dx
+   171 000000B0 89C1                    mov cx, ax
    172                                 
-   173                                 
-   174                                 
-   175                                 
-   176                                 
-   177                                 
-   178                                 
-   179                                 
-   180 000003AB E492                    in al,0x92
-   181 000003AD 0C02                    or al,0000_0010
-   182 000003AF E692                    out 0x92,al
-   183                                 
-   184                                 
-   185 000003B1 0F0116040B              lgdt [gdt_ptr]
-   186                                 
-   187                                 
-   188 000003B6 0F20C0                  mov eax, cr0
-   189 000003B9 6683C801                or eax, 0x00000001
-   190 000003BD 0F22C0                  mov cr0, eax
-   191                                 
-   192 000003C0 66EAC90C00000800        jmp dword SELECTOR_CODE:p_mode_start
-   193                                 
-   194                                 .error_hlt:
-   195 000003C8 F4                      hlt
-   196                                 
-   197                                 [bits 32]
-   198                                 p_mode_start:
-   199 000003C9 66B81000                mov ax, SELECTOR_DATA
-   200 000003CD 8ED8                    mov ds, ax
-   201 000003CF 8EC0                    mov es, ax
-   202 000003D1 8ED0                    mov ss, ax
-   203 000003D3 BC00090000              mov esp,LOADER_STACK_TOP
-   204 000003D8 66B81800                mov ax, SELECTOR_VIDEO
-   205 000003DC 8EE8                    mov gs, ax
-   206                                 
-   207                                 
-   208 000003DE B809000000              mov eax, KERNEL_START_SECTOR
-   209 000003E3 BB00000700              mov ebx, KERNEL_BIN_BASE_ADDR
-   210 000003E8 B9C8000000              mov ecx, 200
-   211                                 
-   212 000003ED E828010000              call rd_disk_m_32
-   213                                 
-   214                                 
-   215 000003F2 E8A9000000              call setup_page
-   216                                 
-   217                                 
-   218 000003F7 0F0105040B0000          sgdt [gdt_ptr]
-   219                                 
-   220                                 
-   221 000003FE 8B1D060B0000            mov ebx, [gdt_ptr + 2]
-   222 00000404 814B1C000000C0          or dword [ebx + 0x18 + 4], 0xc0000000
-   223                                 
-   224                                 
-   225                                 
-   226 0000040B 8105060B0000000000-     add dword [gdt_ptr + 2], 0xc0000000
-   227 0000040B C0                 
-   228                                 
-   229 00000415 81C4000000C0            add esp, 0xc0000000
-   230                                 
-   231                                 
-   232 0000041B B800001000              mov eax, PAGE_DIR_TABLE_POS
-   233 00000420 0F22D8                  mov cr3, eax
-   234                                 
-   235                                 
-   236 00000423 0F20C0                  mov eax, cr0
-   237 00000426 0D00000080              or eax, 0x1<<31
-   238 0000042B 0F22C0                  mov cr0, eax
-   239                                 
-   240                                 
-   241 0000042E 0F0115040B0000          lgdt [gdt_ptr]
-   242                                 
-   243                                 
-   244                                 
-   245                                 
-   246 00000435 EA3C0D00000800          jmp SELECTOR_CODE:enter_kernel
-   247                                 enter_kernel:
-   248                                 
-   249 0000043C E809000000              call kernel_init
-   250 00000441 BC00F009C0              mov esp, 0xc009f000
-   251                                 
-   252 00000446 50                      push eax
-   253 00000447 A118000700              mov eax,[KERNEL_BIN_BASE_ADDR + 24]
-   254 0000044C FFE0                    jmp eax
-   255 0000044E 58                      pop eax
-   256                                 
-   257                                 
-   258                                 kernel_init:
-   259 0000044F 31C0                    xor eax, eax
-   260 00000451 31DB                    xor ebx, ebx
-   261 00000453 31C9                    xor ecx, ecx
-   262 00000455 31D2                    xor edx, edx
-   263                                 
-   264 00000457 668B152A000700          mov dx, [KERNEL_BIN_BASE_ADDR + 42]
-   265 0000045E 8B1D1C000700            mov ebx, [KERNEL_BIN_BASE_ADDR + 28]
-   266                                 
-   267 00000464 81C300000700            add ebx, KERNEL_BIN_BASE_ADDR
-   268 0000046A 668B0D2C000700          mov cx, [KERNEL_BIN_BASE_ADDR + 44]
-   269                                 .each_segment:
-   270 00000471 803B00                  cmp byte [ebx + 0], PT_NULL
-   271 00000474 7415                    je .PTNULL
-   272                                 
-   273                                 
-   274 00000476 FF7310                  push dword [ebx + 16]
-   275 00000479 8B4304                  mov eax, [ebx + 4]
-   276 0000047C 0500000700              add eax, KERNEL_BIN_BASE_ADDR
-   277 00000481 50                      push eax
-   278 00000482 FF7308                  push dword [ebx + 8]
-   279 00000485 E803000000              call mem_cpy
-   280 0000048A 83C40C                  add esp,12
-   281                                 .PTNULL:
-   282 0000048D 01D3                    add ebx, edx
-   283 0000048F E2DE                    loop .each_segment
-   284 00000491 C3                      ret
-   285                                 
-   286                                 
-   287                                 
-   288                                 
-   289                                 
-   290                                 mem_cpy:
-   291 00000492 FC                      cld
-   292 00000493 55                      push ebp
-   293 00000494 89E5                    mov ebp, esp
-   294 00000496 51                      push ecx
-   295 00000497 8B7D08                  mov edi, [ebp + 8]
-   296 0000049A 8B750C                  mov esi, [ebp + 12]
-   297 0000049D 8B4D10                  mov ecx, [ebp + 16]
-   298 000004A0 F3A4                    rep movsb
-   299                                 
-   300                                 
-   301 000004A2 59                      pop ecx
-   302 000004A3 5D                      pop ebp
-   303 000004A4 C3                      ret
-   304                                 
-   305                                 
-   306                                 
-   307                                 setup_page:
-   308                                 
-   309 000004A5 B900100000              mov ecx, 4096
-   310 000004AA BE00000000              mov esi, 0
-   311                                 .clear_page_dir:
-   312 000004AF C6860000100000          mov byte [PAGE_DIR_TABLE_POS + esi], 0
-   313 000004B6 46                      inc esi
-   314 000004B7 E2F4                    loop .clear_page_dir
-   315                                 
-   316                                 
-   317                                 .create_pde:
-   318 000004B9 B800001000              mov eax, PAGE_DIR_TABLE_POS
-   319 000004BE 0500100000              add eax, 0x1000
-   320 000004C3 89C3                    mov ebx, eax
-   321                                 
-   322                                 
-   323                                 
-   324                                 
-   325 000004C5 83C807                  or eax, PG_US_U | PG_RW_W | PG_P
-   326 000004C8 A300001000              mov [PAGE_DIR_TABLE_POS + 0x0], eax
-   327 000004CD A3000C1000              mov [PAGE_DIR_TABLE_POS + 0xc00], eax
-   328                                 
-   329 000004D2 2D00100000              sub eax, 0x1000
-   330 000004D7 A3FC0F1000              mov [PAGE_DIR_TABLE_POS + 4092], eax
-   331                                 
-   332                                 
-   333 000004DC B900010000              mov ecx, 256
-   334 000004E1 BE00000000              mov esi, 0
-   335 000004E6 BA07000000              mov edx, PG_US_U | PG_RW_W | PG_P
-   336                                 .create_pte:
-   337 000004EB 8914B3                  mov [ebx+esi*4],edx
-   338 000004EE 81C200100000            add edx,4096
-   339 000004F4 46                      inc esi
-   340 000004F5 E2F2                    loop .create_pte
-   341                                 
-   342                                 
-   343 000004F7 B800001000              mov eax, PAGE_DIR_TABLE_POS
-   344 000004FC 0500200000              add eax, 0x2000
-   345 00000501 83C807                  or eax, PG_US_U | PG_RW_W | PG_P
-   346 00000504 BB00001000              mov ebx, PAGE_DIR_TABLE_POS
-   347 00000509 B9FE000000              mov ecx, 254
-   348 0000050E BE01030000              mov esi, 769
-   349                                 .create_kernel_pde:
-   350 00000513 8904B3                  mov [ebx+esi*4], eax
-   351 00000516 46                      inc esi
-   352 00000517 0500100000              add eax, 0x1000
-   353 0000051C E2F3                    loop .create_kernel_pde
-   354 0000051E C3                      ret
-   355                                 
-   356                                 
-   357                                 
-   358                                 
-   359                                 rd_disk_m_32:
-   360                                 
-   361                                 
-   362                                 
-   363                                 
-   364 0000051F 89C6                    mov esi,eax
-   365 00000521 6689CF                  mov di,cx
-   366                                 
-   367                                 
-   368 00000524 66BAF201                mov dx,0x1f2
-   369 00000528 88C8                    mov al,cl
-   370 0000052A EE                      out dx,al
-   371                                 
-   372 0000052B 89F0                    mov eax,esi
-   373                                 
-   374                                 
-   375                                 
-   376                                 
-   377 0000052D 66BAF301                mov dx,0x1f3
-   378 00000531 EE                      out dx,al
-   379                                 
-   380                                 
-   381 00000532 B108                    mov cl,8
-   382 00000534 D3E8                    shr eax,cl
-   383 00000536 66BAF401                mov dx,0x1f4
-   384 0000053A EE                      out dx,al
-   385                                 
-   386                                 
-   387 0000053B D3E8                    shr eax,cl
-   388 0000053D 66BAF501                mov dx,0x1f5
-   389 00000541 EE                      out dx,al
-   390                                 
-   391 00000542 D3E8                    shr eax,cl
-   392 00000544 240F                    and al,0x0f
-   393 00000546 0CE0                    or al,0xe0
-   394 00000548 66BAF601                mov dx,0x1f6
-   395 0000054C EE                      out dx,al
-   396                                 
-   397                                 
-   398 0000054D 66BAF701                mov dx,0x1f7
-   399 00000551 B020                    mov al,0x20
-   400 00000553 EE                      out dx,al
-   401                                 
-   402                                 
-   403                                 
-   404                                 
-   405                                  .not_ready:
-   406                                 
-   407 00000554 90                      nop
-   408 00000555 EC                      in al,dx
-   409 00000556 2488                    and al,0x88
-   410 00000558 3C08                    cmp al,0x08
-   411 0000055A 75F6                    jnz .not_ready
-   412                                 
-   413                                 
-   414 0000055C 6689F8                  mov ax, di
-   415                                 
-   416                                 
-   417 0000055F 66BA0001                mov dx, 256
-   418 00000563 66F7E2                  mul dx
-   419 00000566 6689C1                  mov cx, ax
-   420 00000569 66BAF001                mov dx, 0x1f0
-   421                                  .go_on_read:
-   422 0000056D 66ED                    in ax,dx
-   423 0000056F 668903                  mov [ebx], ax
-   424 00000572 83C302                  add ebx, 2
-   425                                 
-   426                                 
-   427                                 
-   428                                 
-   429                                 
-   430                                 
-   431                                 
-   432                                 
-   433                                 
-   434                                 
-   435                                 
-   436                                 
-   437                                 
-   438                                 
-   439                                 
-   440                                 
-   441                                 
-   442                                 
-   443 00000575 E2F4                    loop .go_on_read
-   444 00000577 C3                      ret
+   173 000000B2 BAF001                  mov dx, 0x1f0
+   174                                  .go_on_read:
+   175 000000B5 ED                      in ax,dx
+   176 000000B6 8907                    mov [bx],ax
+   177 000000B8 83C302                  add bx,2
+   178 000000BB E2F6                    loop .go_on_read
+   179 000000BD C3                      ret
+   180                                 
+   181 000000BE 00<rept>                times 510-($-$$) db 0
+   182 000001FE 55AA                    db 0x55,0xaa
