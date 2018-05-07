@@ -8,20 +8,17 @@
 void thread_a(void* arg)
 {
     char* str=arg;
-    while (1)
-    {
-        put_str(str);
 
-    }
+    while (1) put_str(str);
+
 }
 
 void thread_b(void* arg)
 {
     char* str=arg;
-    while (1)
-    {
-        put_str(str);
-    }
+
+    while (1) put_str(str);
+
 }
 
 void check_intr_status()
@@ -42,11 +39,11 @@ int main(void) {
     thread_init();   //初始化内核的两个页表这个是必须进行的否则会报错
     thread_start("thread_a",21,thread_a," A ");
     thread_start("thread_b",21,thread_b," B ");
-    intr_enale();
+    intr_enable();
 
     while(1)
     {
-//        put_str("main_thread");
+        put_str("main_thread");
     }
    return 0;
 }

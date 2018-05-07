@@ -50,7 +50,6 @@ static void general_intr_handler(uint32_t irq_num)
 
     put_str("\n!!! exception message end !!!\n");
 
-//    while (1);
 
 }
 
@@ -150,7 +149,7 @@ enum intr_status intr_get_status()
 
 
 /*开中断 并且返回中断前的状态*/
-enum intr_status intr_enale()
+enum intr_status intr_enable()
 {
     enum intr_status old_status;
     if(INTR_ON==intr_get_status())
@@ -185,7 +184,7 @@ enum intr_status intr_disable()
 /*设置状态为status*/
 enum intr_status intr_set_status(enum intr_status status)
 {
-    return status & INTR_ON ? intr_enale():intr_disable();
+    return status & INTR_ON ? intr_enable():intr_disable();
 }
 
 /*在中断处理程序数组中安装中断处理程序*/

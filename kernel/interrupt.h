@@ -5,7 +5,7 @@
 #ifndef SYSTEM_INTERRUPT_H
 #define SYSTEM_INTERRUPT_H
 #include "stdint.h"
-
+#include "interrupt.h"
 
 #define IDT_DESC_CNT 0X21
 
@@ -15,6 +15,11 @@
 #define  PIC_S_DATA 0XA1
 
 #define EFLAGS_IF 0X00000200    //eflags_if位为1
+
+/*
+ * push{wl} 将标志寄存器压入栈 w:2byte l:4byte
+ *
+ */
 #define GET_EFLAGS(EFLAGS_VAR) asm volatile("pushfl;popl %0":"=g"(EFLAGS_VAR))
 
 //中断门描述符结构体
@@ -53,7 +58,7 @@ extern intr_handler intr_entry_table[IDT_DESC_CNT];  //中断入口函数的地�
 static void general_intr_handler(uint32_t irq_num);
 
 enum intr_status intr_get_status();
-enum intr_status intr_enale();
+enum intr_status intr_enable();
 enum intr_status intr_disable();
 enum intr_status intr_set_status(enum intr_status status);
 void register_handler(uint8_t irq_num,intr_handler function);

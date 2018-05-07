@@ -61,6 +61,6 @@ void timer_init()
 {
 
     /*初始化定时器的定时器0*/
-    freq_set(COUNTER0_PORT,COUNTER0_NO,READ_WRITE_LATCH,COUNTER_MODE,COUTER0_VALUE);
+    freq_set(COUNTER0_PORT,COUNTER0_NO , READ_WRITE_LATCH , COUNTER_MODE , COUTER0_VALUE) ;
     register_handler(0x20,intr_timer_handler);
 }

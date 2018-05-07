@@ -51,7 +51,7 @@ intr_exit:
     pop es
     pop ds
     add esp,4 ;跳过错误码
-    iretd
+    iretd   ;从栈顶弹出32bit 放入EIP
 
 
 VECTOR 0x00,ZERO
